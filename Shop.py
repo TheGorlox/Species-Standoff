@@ -120,8 +120,8 @@ Shop:
 
 class DraggableItem(KXDraggableBehavior, BoxLayout):
     def myfunc(self):
-        print("success")
-
+        app = App.get_running_app()
+        app.root.cash += 1
 
 class SampleApp(App):
     def build(self):

@@ -14,6 +14,7 @@ class Cow(Animal):
         self.power, self.toughness = 3, 3
         if args:
             self.power, self.toughness = args[0], args[1]
+        self.image = "../images/cow"
 
 
 class Chicken(Animal):
@@ -23,6 +24,7 @@ class Chicken(Animal):
         self.power, self.toughness = 2, 1
         if args:
             self.power, self.toughness = args[0], args[1]
+        self.image = "../images/chicken"
 
 
 class Snake(Animal):
@@ -32,6 +34,7 @@ class Snake(Animal):
         self.power, self.toughness = 3, 1
         if args:
             self.power, self.toughness = args[0], args[1]
+        self.image = "../images/snake"
 
 
 class Fish(Animal):
@@ -41,6 +44,7 @@ class Fish(Animal):
         self.power, self.toughness = 1, 2
         if args:
             self.power, self.toughness = args[0], args[1]
+        self.image = "../images/fish"
 
 
 class Eel(Animal):
@@ -50,6 +54,7 @@ class Eel(Animal):
         self.power, self.toughness = 3, 2
         if args:
             self.power, self.toughness = args[0], args[1]
+        self.image = "../images/eel"
 
 
 class Dog(Animal):
@@ -59,6 +64,7 @@ class Dog(Animal):
         self.power, self.toughness = 2, 2
         if args:
             self.power, self.toughness = args[0], args[1]
+        self.image = "../images/dog"
 
 
 class Cat(Animal):
@@ -68,6 +74,7 @@ class Cat(Animal):
         self.power, self.toughness = 2, 2
         if args:
             self.power, self.toughness = args[0], args[1]
+        self.image = "../images/cat"
 
 
 class Crow(Animal):
@@ -77,6 +84,7 @@ class Crow(Animal):
         self.power, self.toughness = 3, 1
         if args:
             self.power, self.toughness = args[0], args[1]
+        self.image = "../images/crow"
 
 
 class Penguin(Animal):
@@ -86,6 +94,7 @@ class Penguin(Animal):
         self.power, self.toughness = 2, 3
         if args:
             self.power, self.toughness = args[0], args[1]
+        self.image = "../images/penguin"
 
 
 class PolarBear(Animal):
@@ -95,6 +104,7 @@ class PolarBear(Animal):
         self.power, self.toughness = 4, 2
         if args:
             self.power, self.toughness = args[0], args[1]
+        self.image = "../images/polarbear"
 
 
 class Panda(Animal):
@@ -104,3 +114,4 @@ class Panda(Animal):
         self.power, self.toughness = 2, 4
         if args:
             self.power, self.toughness = args[0], args[1]
+        self.image = "../images/panda"

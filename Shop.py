@@ -121,14 +121,15 @@ Shop:
 class DraggableItem(KXDraggableBehavior, BoxLayout):
     def myfunc(self):
         app = App.get_running_app()
-        app.root.cash += 1
+        child1 = len(app.root.children[1].children)
+        app.root.cash = len(app.root.children[0].children)
+        
 
 class SampleApp(App):
     def build(self):
         return Builder.load_string(KV_CODE)
 
     def on_start(self):
-        print(self.root.ids)
         gl = self.root.ids.sh1
         DraggableItem = Factory.DraggableItem
         DraggableItem()

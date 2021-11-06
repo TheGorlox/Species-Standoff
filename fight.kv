@@ -1,13 +1,108 @@
-<BoxLayoutExample>:
-    orientation: "vertical"
-    Button:
-        text: "A"
-        on_press: root.say_hello()
+#:kivy 2.0.0
+<TitleScreen>:
+    Image:
+        allow_stretch:1
+        keep_ratio:0
+        source:"./images/stars.zip"
+    BoxLayout: 
+        orientation: "vertical"
+        
+            
+        Label:
+            font_size: 72
+            text: "Species Standoff"
+        BoxLayout:
+            padding: 40
+            orientation: "vertical"
+            Button:
+                text: 'Play'
+                size_hint: .5, .5
+                pos_hint: {"center_x": .5}
+                
+                background_color: .9,.1,.8
+                on_press:
+                    root.manager.transition.direction = 'up'
+                    root.manager.current = 'map'
+            Label:
+                text: ""
+            Button:
+                text: 'Settings'
+                size_hint: .2, .2
+                pos_hint: {"center_x": .5}
+
+                background_color: .9,.1,.8
+                on_press:
+                    root.manager.transition.direction = 'left'
+                    root.manager.current = 'settings'
+
+<SettingsScreen>:
     BoxLayout:
-        id: test 
-        #Image:
-            #source: './images/cow.png'
-            #size: self.texture_size
-        #Label:
-            #text: "cow"
+        orientation: "vertical"
+        Button:
+            text: 'Toggle Music'
+            on_press:
+                root.stop_music()
+        Button:
+            text: 'Back to menu'
+            on_press:
+                root.manager.transition.direction = 'right'
+                root.manager.current = 'menu'
+
+<MapScreen>:
+    Image:
+        allow_stretch:1
+        keep_ratio:0
+        source:"./images/stars.zip"
+    BoxLayout:
+        orientation: "vertical"
+        padding: 20
+        Button:
+            text: "back"
+            size_hint: .5, .5
+            pos_hint: {"center_x":.5}
+            background_color: .9,.1,.8
+            on_press:
+                root.manager.transition.direction = "down"
+                root.manager.current = "menu"
+        BoxLayout:
+            orientation: "horizontal"
+            padding: 10
+            Button:
+                text: "Level 1"
+                background_color: .9,.1,.8
+                on_press:
+                    root.change_transition("fade")
+                    root.manager.current = "menu"
+                    root.change_transition("slide")
+            Button:
+                text: "Level 2"
+                disabled: True
+                background_color: .9,.1,.8
+            Button:
+                text: "Level 3"
+                disabled: True
+                background_color: .9,.1,.8
+            Button:
+                text: "Level 4"
+                disabled: True
+                background_color: .9,.1,.8
+            Button:
+                text: "Level 5"
+                disabled: True
+                background_color: .9,.1,.8
+        BoxLayout:
+            orientation: "horizontal"
+            padding: 10
+            Button:
+                text: "Tier 1"
+                background_color: .9,.1,.8
+            Button:
+                text: "Tier 2"
+                disabled: True
+                background_color: .9,.1,.8
+            Button:
+                text: "Tier 3"
+                disabled: True
+                background_color: .9,.1,.8
+
 

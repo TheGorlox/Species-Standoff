@@ -1,7 +1,8 @@
 from kivy.core.audio import SoundLoader
 from kivy.app import App
 from kivy.lang import Builder
-from kivy.uix.screenmanager import ScreenManager, Screen
+from kivy.uix.screenmanager import ScreenManager, Screen, SlideTransition
+from kivy.uix.screenmanager import FadeTransition
 from kivy.uix.button import Button
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.gridlayout import GridLayout
@@ -20,9 +21,10 @@ Builder.load_string("""
         
             
         Label:
-            font_size: 42
+            font_size: 72
             text: "Species Standoff"
         BoxLayout:
+            padding: 40
             orientation: "vertical"
             Button:
                 text: 'Play'
@@ -33,14 +35,16 @@ Builder.load_string("""
                 on_press:
                     root.manager.transition.direction = 'up'
                     root.manager.current = 'map'
+            Label:
+                text: ""
             Button:
                 text: 'Settings'
-                size_hint: .1, .1
-                pos_hint: {"center_x": .8}
+                size_hint: .2, .2
+                pos_hint: {"center_x": .5}
 
                 background_color: .9,.1,.8
                 on_press:
-                    root.manager.transition.direction = "left"
+                    root.manager.transition.direction = 'left'
                     root.manager.current = 'settings'
 
 <SettingsScreen>:
@@ -57,39 +61,61 @@ Builder.load_string("""
                 root.manager.current = 'menu'
 
 <MapScreen>:
+    Image:
+        allow_stretch:1
+        keep_ratio:0
+        source:"./images/stars.zip"
     BoxLayout:
         orientation: "vertical"
+        padding: 20
         Button:
             text: "back"
+            size_hint: .5, .5
+            pos_hint: {"center_x":.5}
+            background_color: .9,.1,.8
             on_press:
                 root.manager.transition.direction = "down"
                 root.manager.current = "menu"
         BoxLayout:
             orientation: "horizontal"
+            padding: 10
             Button:
                 text: "Level 1"
+                background_color: .9,.1,.8
+                on_press:
+                    root.change_transition("fade")
+                    root.manager.current = "menu"
+                    root.change_transition("slide")
             Button:
                 text: "Level 2"
                 disabled: True
+                background_color: .9,.1,.8
             Button:
                 text: "Level 3"
                 disabled: True
+                background_color: .9,.1,.8
             Button:
                 text: "Level 4"
                 disabled: True
+                background_color: .9,.1,.8
             Button:
                 text: "Level 5"
                 disabled: True
+                background_color: .9,.1,.8
         BoxLayout:
             orientation: "horizontal"
+            padding: 10
             Button:
                 text: "Tier 1"
+                background_color: .9,.1,.8
             Button:
                 text: "Tier 2"
                 disabled: True
+                background_color: .9,.1,.8
             Button:
                 text: "Tier 3"
                 disabled: True
+                background_color: .9,.1,.8
 
 """)
 # Declare both screens
@@ -106,7 +132,11 @@ class SettingsScreen(Screen):
         else: sound.play()
 
 class MapScreen(Screen):
-    pass
+    def change_transition(self, type):
+        if type == "fade":
+            sm.transition = FadeTransition(duration=0.6)
+        if type == "slide":
+            sm.transition = SlideTransition()
 
 
 # from kivy_garden.draggable import KXDraggableBehavior
@@ -143,12 +173,14 @@ if sound:
 class FightApp(App):
     def build(self):
 
+        global sm
         sm = ScreenManager()
         sm.add_widget(TitleScreen(name='menu'))
         sm.add_widget(SettingsScreen(name='settings'))
         sm.add_widget(MapScreen(name='map'))
 
         return sm
+    
 
 
 if __name__ == '__main__':

@@ -121,8 +121,7 @@ Shop:
 class DraggableItem(KXDraggableBehavior, BoxLayout):
     def myfunc(self):
         app = App.get_running_app()
-        child1 = len(app.root.children[1].children)
-        app.root.cash = len(app.root.children[0].children)
+        app.root.cash = len(app.root.children[1].children)
         
 
 class SampleApp(App):

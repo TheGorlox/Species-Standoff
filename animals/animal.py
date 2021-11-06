@@ -5,5 +5,6 @@ class Animal:
 
 
 class Cow(Animal):
+
     type = "Cow"
     desc = "a milk machine from Earth"

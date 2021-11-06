@@ -1,11 +1,17 @@
 #:kivy 2.0.0
 
 <Container>:
-    canvas.after:
+    canvas:
+        Rectangle:
+            pos: self.pos
+            size: self.size
         Color:
-            rgba: 1.0, 0.5, 0.5, 1
+            rgba: 1, 0.5, 0.5, 1
 
 <FightScreen>:
     canvas:
+        Rectangle:
+            pos: self.pos
+            size: self.size
         Color:
-            rgba: 1, 1, 1, 1
+            rgba: 0, 0, 0, 1

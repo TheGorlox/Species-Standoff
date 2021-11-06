@@ -8,6 +8,7 @@ from kivy.uix.gridlayout import GridLayout
 from kivy.uix.image import Image
 from animals.animal import *
 from kivy.core.audio import SoundLoader
+from kivy.core.audio import Sound
 Builder.load_string("""
 <TitleScreen>:
     Image:
@@ -91,6 +92,8 @@ class FightApp(App):
         if sound:
             print("Sound found at %s" % sound.source)
             print("Sound is %.3f seconds" % sound.length)
+            sound.loop = True
+            sound.mixer = Sound
             sound.play()
 
         sm = ScreenManager()

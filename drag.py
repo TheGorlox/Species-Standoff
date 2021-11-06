@@ -1,155 +1,98 @@
-from kivy.properties import NumericProperty
 from kivy.app import App
+from kivy.garden.magnet import Magnet
+from kivy.uix.image import Image
+from kivy.properties import ObjectProperty
 from kivy.lang import Builder
-from kivy.uix.floatlayout import FloatLayout
-from kivy.uix.label import Label
-import asynckivy as ak
+from kivy.clock import Clock
 
-from kivy_garden.draggable import (
-    KXDraggableBehavior, KXDroppableBehavior,
-)
+from os import listdir
 
-KV_CODE = '''
-<MyDroppable>:
-    text: ''.join(root.drag_classes)
-    font_size: 100
-    color: 1, .2, 1, .8
-    canvas.before:
-        Color:
-            rgba: 1, 1, 1, self.n_ongoing_drags_inside * 0.12
-        Rectangle:
-            pos: self.pos
-            size: self.size
-<MyDraggable>:
-    drag_timeout: 0
-    font_size: 40
-    opacity: .3 if root.is_being_dragged else 1.
-<Divider@Widget>:
-    canvas:
-        Color:
-            rgb: 1, 1, 1
-        Rectangle:
-            pos: self.pos
-            size: self.size
-<HDivider@Divider>:
-    size_hint_y: None
-    height: 1
-<VDivider@Divider>:
-    size_hint_x: None
-    width: 1
-BoxLayout:
-    orientation: 'vertical'
+IMAGEDIR = './images/'
+
+IMAGES = filter(
+    lambda x: x.endswith('.png'),
+    listdir(IMAGEDIR))
+
+kv = '''
+FloatLayout:
     BoxLayout:
-        MyDroppable:
-            drag_classes: ['A', ]
-        VDivider:
-        MyDroppable:
-            drag_classes: ['A', 'B', ]
-        VDivider:
-        MyDroppable:
-            drag_classes: ['B', ]
-    HDivider:
-    BoxLayout:
-        MyDraggable:
-            drag_cls: 'A'
-            text: 'A1'
-        MyDraggable:
-            drag_cls: 'A'
-            text: 'A2'
-        MyDraggable:
-            drag_cls: 'A'
-            text: 'A3'
-        MyDraggable:
-            drag_cls: 'A'
-            text: 'A4'
-        MyDraggable:
-            drag_cls: 'B'
-            text: 'B1'
-        MyDraggable:
-            drag_cls: 'B'
-            text: 'B2'
-        MyDraggable:
-            drag_cls: 'B'
-            text: 'B3'
-        MyDraggable:
-            drag_cls: 'B'
-            text: 'B4'
+        GridLayout:
+            id: grid_layout
+            cols: int(self.width / 32)
+        FloatLayout:
+            id: float_layout
 '''
 
 
-class MyDraggable(KXDraggableBehavior, Label):
-    def on_drag_success(self, touch):
-        self.parent.remove_widget(self)
+class DraggableImage(Magnet):
+    img = ObjectProperty(None, allownone=True)
+    app = ObjectProperty(None)
+
+    def on_img(self, *args):
+        self.clear_widgets()
+
+        if self.img:
+            Clock.schedule_once(lambda *x: self.add_widget(self.img), 0)
+
+    def on_touch_down(self, touch, *args):
+        if self.collide_point(*touch.pos):
+            touch.grab(self)
+            self.remove_widget(self.img)
+            self.app.root.add_widget(self.img)
+            self.center = touch.pos
+            self.img.center = touch.pos
+            return True
+
+        return super(DraggableImage, self).on_touch_down(touch, *args)
+
+    def on_touch_move(self, touch, *args):
+        grid_layout = self.app.root.ids.grid_layout
+        float_layout = self.app.root.ids.float_layout
+
+        if touch.grab_current == self:
+            self.img.center = touch.pos
+            if grid_layout.collide_point(*touch.pos):
+                grid_layout.remove_widget(self)
+                float_layout.remove_widget(self)
+
+                for i, c in enumerate(grid_layout.children):
+                    if c.collide_point(*touch.pos):
+                        grid_layout.add_widget(self, i - 1)
+                        break
+                else:
+                    grid_layout.add_widget(self)
+            else:
+                if self.parent == grid_layout:
+                    grid_layout.remove_widget(self)
+                    float_layout.add_widget(self)
+
+                self.center = touch.pos
+
+        return super(DraggableImage, self).on_touch_move(touch, *args)
+
+    def on_touch_up(self, touch, *args):
+        if touch.grab_current == self:
+            self.app.root.remove_widget(self.img)
+            self.add_widget(self.img)
+            touch.ungrab(self)
+            return True
+
+        return super(DraggableImage, self).on_touch_up(touch, *args)
 
 
-class ReactiveDroppableBehavior(KXDroppableBehavior):
-    '''
-    ``KXDroppableBehavior`` + leaving/entering events.
-    .. note::
-        This class probably deserves to be an official component. But not now
-        because I'm not sure the word 'reactive' is appropriate to describe
-        its behavior.
-    '''
-    __events__ = ('on_drag_enter', 'on_drag_leave', )
-
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.__ud_key = 'ReactiveDroppableBehavior.' + str(self.uid)
-
-    def on_touch_move(self, touch):
-        ud_key = self.__ud_key
-        touch_ud = touch.ud
-        if ud_key not in touch_ud and self.collide_point(*touch.pos):
-            drag_cls = touch_ud.get('kivyx_drag_cls', None)
-            if drag_cls is not None:
-                touch_ud[ud_key] = None
-                if drag_cls in self.drag_classes:
-                    # Watches 'is_being_dragged' as well, so that the
-                    # '_watch_touch()' will be automatically cancelled when
-                    # the drag is cancelled.
-                    ak.start(ak.or_(
-                        self._watch_touch(touch),
-                        ak.event(
-                            touch.ud['kivyx_draggable'], 'is_being_dragged'),
-                    ))
-        return super().on_touch_move(touch)
-
-    async def _watch_touch(self, touch):
-        draggable = touch.ud['kivyx_draggable']
-        collide_point = self.collide_point
-
-        self.dispatch('on_drag_enter', touch, draggable)
-        try:
-            async for __ in ak.rest_of_touch_moves(self, touch):
-                if not collide_point(*touch.pos):
-                    return
-        finally:
-            self.dispatch('on_drag_leave', touch, draggable)
-            del touch.ud[self.__ud_key]
-
-    def on_drag_enter(self, touch, draggable):
-        pass
-
-    def on_drag_leave(self, touch, draggable):
-        pass
-
-
-class MyDroppable(ReactiveDroppableBehavior, Label):
-    n_ongoing_drags_inside = NumericProperty(0)
-
-    def on_drag_enter(self, touch, draggable):
-        self.n_ongoing_drags_inside += 1
-        print(f"{draggable.text} entered {self.text}.")
-
-    def on_drag_leave(self, touch, draggable):
-        self.n_ongoing_drags_inside -= 1
-        print(f"{draggable.text} left {self.text}.")
-
-
-class SampleApp(App):
+class DnDMagnet(App):
     def build(self):
-        return Builder.load_string(KV_CODE)
+        self.root = Builder.load_string(kv)
+        for i in IMAGES:
+            image = Image(source=IMAGEDIR + i, size=(32, 32),
+                          size_hint=(None, None))
+            draggable = DraggableImage(img=image, app=self,
+                                       size_hint=(None, None),
+                                       size=(32, 32))
+            self.root.ids.grid_layout.add_widget(draggable)
+
+        return self.root
 
 
 if __name__ == '__main__':
-    SampleApp().run()
+    DnDMagnet().run()

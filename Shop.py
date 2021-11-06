@@ -1,7 +1,9 @@
 from kivy.app import App
 from kivy.lang import Builder
 import random
+from kivy.uix.image import Image
 from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.widget import Widget
 from kivy.factory import Factory
 from kivy.clock import Clock
 from kivy.properties import (
@@ -9,7 +11,7 @@ from kivy.properties import (
 )
 import asynckivy as ak
 
-import kivy_garden.draggable
+from kivy_garden.draggable import KXDraggableBehavior
 
 
 class Magnet(Factory.Widget):
@@ -61,24 +63,24 @@ class Shop(BoxLayout):
 KV_CODE = '''
 #:import create_spacer kivy_garden.draggable._utils._create_spacer
 <ReorderableGridLayout@KXReorderableBehavior+GridLayout>:
-<DraggableItem@KXDraggableBehavior+Magnet>:
+<DraggableItem>:
     do_anim: not self.is_being_dragged
     anim_duration: .2
     drag_cls: 'test'
     drag_timeout: 50
     font_size: 30
-    text: ''
+    on_drag_success: self.myfunc()
     opacity: .5 if self.is_being_dragged else 1.
     size_hint_min: 50, 50
     pos_hint: {'center_x': .5, 'center_y': .5, }
+    sauce: ''
     canvas.after:
         Color:
             rgba: .5, 1, 0, 1 if root.is_being_dragged else .5
         Line:
             width: 2 if root.is_being_dragged else 1
             rectangle: [*self.pos, *self.size, ]
-    Image:
-        source: root.text
+    
 <MyButton@Button>:
     font_size: sp(20)
     size_hint_min_x: self.texture_size[0] + dp(10)
@@ -116,6 +118,11 @@ Shop:
 '''
 
 
+class DraggableItem(KXDraggableBehavior, BoxLayout):
+    def myfunc(self):
+        print("success")
+
+
 class SampleApp(App):
     def build(self):
         return Builder.load_string(KV_CODE)
@@ -126,8 +133,10 @@ class SampleApp(App):
         DraggableItem = Factory.DraggableItem
         DraggableItem()
         for i in range(5):
-            gl.add_widget(DraggableItem(text="./images/"+random.choice(
+            di = DraggableItem()
+            di.add_widget(Image(source="./images/"+random.choice(
                 ["cow", "fish", "cat", "panda", "dog", "chicken", "glipglop"])+".png"))
+            gl.add_widget(di)
 
 
 if __name__ == '__main__':

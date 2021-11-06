@@ -72,7 +72,7 @@
                 background_color: .9,.1,.8
                 on_press:
                     root.change_transition("fade")
-                    root.manager.current = "menu"
+                    root.manager.current = "shop"
                     root.change_transition("slide")
             Button:
                 text: "Level 2"
@@ -106,3 +106,6 @@
                 background_color: .9,.1,.8
 
 
+<ShopScreen>:
+    Image:
+        source: "./images/cow.png"

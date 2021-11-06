@@ -22,7 +22,9 @@ class SettingsScreen(Screen):
     def stop_music(self):
         if sound.state == 'play':
             sound.stop()
-        else: sound.play()
+        else:
+            sound.play()
+
 
 class MapScreen(Screen):
     def change_transition(self, type):
@@ -30,6 +32,10 @@ class MapScreen(Screen):
             sm.transition = FadeTransition(duration=0.6)
         if type == "slide":
             sm.transition = SlideTransition()
+
+
+class ShopScreen(Screen):
+    pass
 
 
 # from kivy_garden.draggable import KXDraggableBehavior
@@ -56,6 +62,7 @@ class BoxLayoutExample(BoxLayout):
 class MainWidget():
     pass
 
+
 sound = SoundLoader.load('./sound/speciesstandoff3.wav')
 if sound:
     sound.loop = True
@@ -71,9 +78,9 @@ class FightApp(App):
         sm.add_widget(TitleScreen(name='menu'))
         sm.add_widget(SettingsScreen(name='settings'))
         sm.add_widget(MapScreen(name='map'))
+        sm.add_widget(ShopScreen(name='shop'))
 
         return sm
-    
 
 
 if __name__ == '__main__':

@@ -32,19 +32,65 @@ Builder.load_string("""
                 background_color: .9,.1,.8
                 on_press:
                     root.manager.transition.direction = 'up'
+                    root.manager.current = 'map'
+            Button:
+                text: 'Settings'
+                size_hint: .1, .1
+                pos_hint: {"center_x": .8}
+
+                background_color: .9,.1,.8
+                on_press:
+                    root.manager.transition.direction = "left"
                     root.manager.current = 'settings'
-            Label:
 
 <SettingsScreen>:
     BoxLayout:
         orientation: "vertical"
         Button:
-            text: 'Mute Music'
+            text: 'Toggle Music'
+            on_press:
+                root.stop_music()
         Button:
             text: 'Back to menu'
             on_press:
                 root.manager.transition.direction = 'right'
                 root.manager.current = 'menu'
+
+<MapScreen>:
+    BoxLayout:
+        orientation: "vertical"
+        Button:
+            text: "back"
+            on_press:
+                root.manager.transition.direction = "down"
+                root.manager.current = "menu"
+        BoxLayout:
+            orientation: "horizontal"
+            Button:
+                text: "Level 1"
+            Button:
+                text: "Level 2"
+                disabled: True
+            Button:
+                text: "Level 3"
+                disabled: True
+            Button:
+                text: "Level 4"
+                disabled: True
+            Button:
+                text: "Level 5"
+                disabled: True
+        BoxLayout:
+            orientation: "horizontal"
+            Button:
+                text: "Tier 1"
+            Button:
+                text: "Tier 2"
+                disabled: True
+            Button:
+                text: "Tier 3"
+                disabled: True
+
 """)
 # Declare both screens
 
@@ -54,6 +100,12 @@ class TitleScreen(Screen):
 
 
 class SettingsScreen(Screen):
+    def stop_music(self):
+        if sound.state == 'play':
+            sound.stop()
+        else: sound.play()
+
+class MapScreen(Screen):
     pass
 
 
@@ -81,24 +133,20 @@ class BoxLayoutExample(BoxLayout):
 class MainWidget():
     pass
 
-
+sound = SoundLoader.load('./sound/speciesstandoff3.wav')
+if sound:
+    sound.loop = True
+    sound.play()
 # sound = SoundLoader.load('./sound/speciesstandoff 3.wav')
 
 
 class FightApp(App):
     def build(self):
 
-        sound = SoundLoader.load('./sound/speciesstandoff3.wav')
-        if sound:
-            print("Sound found at %s" % sound.source)
-            print("Sound is %.3f seconds" % sound.length)
-            sound.loop = True
-            sound.mixer = Sound
-            sound.play()
-
         sm = ScreenManager()
         sm.add_widget(TitleScreen(name='menu'))
         sm.add_widget(SettingsScreen(name='settings'))
+        sm.add_widget(MapScreen(name='map'))
 
         return sm
 

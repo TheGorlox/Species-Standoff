@@ -1,9 +1,27 @@
 from kivy.app import App
 from kivy.uix.button import Button
 from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.gridlayout import GridLayout
+from kivy.uix.image import Image
+from animals.animal import *
+# from kivy_garden.draggable import KXDraggableBehavior
+animals = []
+# for i in range(5):
+animals.append(Cow())
+animals.append(Chicken())
+animals.append(Fish())
 
 
 class BoxLayoutExample(BoxLayout):
+    def __init__(self, **kwargs):
+        super(BoxLayoutExample, self).__init__(**kwargs)
+        for i in animals:
+            # print(i.image)
+            self.ids.test.add_widget(Image(source=i.image))
+
+    def say_hello(self):
+        self.ids.test.add_widget(Image(source='./images/cow.png'))
+
     pass
 
 

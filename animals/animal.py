@@ -1,5 +1,6 @@
 import random
 import math
+from typing import overload
 # initialize "Animal"() to init default values.
 # initialize "Animal"(power, toughness) to init certain power/toughness
 class Animal:
@@ -21,10 +22,16 @@ class Animal:
                 "armor":0,
                 }
 
+    on_death = {"milk":0,
+                "egg":0,
+                }
 
-    death_q = []
+    # death_q[0] = friends
+    # death_q[1] = enemies
+    death_q = [[],[]]
 
-    # def die(self):
+    def die(self, list1, list2, index, dq_index):
+        Animal.death_q[dq_index].append(self)
 
 
 class Cow(Animal):
@@ -37,7 +44,12 @@ class Cow(Animal):
         self.image = "./images/cow.png"
 
         #special attributes
-
+        self.on_death["milk"] = 2
+    
+    def die(self, list1, list2, index, dq_index):
+        Animal.death_q[dq_index].append(self)
+        if index == -1: return
+        list1[index].toughness += self.on_death["milk"]
 
 
 class Chicken(Animal):
@@ -50,7 +62,13 @@ class Chicken(Animal):
         self.image = "./images/chicken.png"
 
         #special attributes
+        self.on_death["egg"] = 1
 
+    def die(self, list1, list2, index, dq_index):
+        Animal.death_q[dq_index].append(self)
+        if len(list2) == 0: return
+        (random.choice(list2)).toughness -= self.on_death["egg"]
+        print("egg thrown")
 
 
 class Snake(Animal):
@@ -177,36 +195,45 @@ def fight(list1, list2):
     while len(list1) != 0 and len(list2) != 0:
 
         #before attack - takes a list and returns it after all status damage is done (burn, poison etc)
-        list1 = pre_attack_damage(list1)
-        list2 = pre_attack_damage(list2)
+        list1 = pre_attack_damage(list1, list2, 0)
+        list2 = pre_attack_damage(list2, list1, 1)
+
 
         #attack - takes lists 1 and 2 and returns the lists after animals fight
         list1, list2 = attack(list1, list2)
 
-        #after attack - loops through death queue and handles the results of who died this round
-        animal: Animal
-        for animal in Animal.death_q:
+        #after attack - loops through dead animals and applies "on_death" attributes
+
+        #end phase - loops through death queues and handles the results of who died this round
+        for animal in Animal.death_q[0]:
             print(animal.species, " died!")
-        Animal.death_q.clear()
-    
+        Animal.death_q[0].clear()
+        for animal in Animal.death_q[1]:
+            print(animal.species, " died!")
+        Animal.death_q[1].clear()
+
+
     # return the lists with possible victors, or empty lists for a tie
     return list1, list2
 
-def pre_attack_damage(lis):
+
+def pre_attack_damage(team, enemy, death_q_index):
     animal: Animal
-    for animal in lis:
+    for animal in team:
         animal.toughness -= animal.neg_effects["burn"]
         animal.toughness -= animal.neg_effects["poison"]
         if animal.toughness <= 0:
-            Animal.death_q.append(lis.pop(animal))
-    return lis
+            animal.die(team, enemy, team.index(animal), death_q_index)
+            team.remove(animal)
+
+    return team
 
 def attack(list1, list2):
 
     animal1 = list1[0]
     animal2 = list2[0]
 
-    print(f"{animal1.species} - P{animal1.power}/T{animal1.toughness} vs {animal2.species} - P{animal2.power}/T{animal2.toughness}")
+    print(f"{animal1.species} - {animal1.power}/{animal1.toughness} vs {animal2.species} - {animal2.power}/{animal2.toughness}")
         
     # animal 1 combat
     if random.random() > animal1.dodge_chance:
@@ -235,19 +262,25 @@ def attack(list1, list2):
         print(animal2.species," dodged!")
     
     # on die
-    if animal1.toughness <= 0 and animal2.toughness <= 0:
-        Animal.death_q.append(list1.pop(0))
-        Animal.death_q.append(list2.pop(0))
     if animal1.toughness <= 0:
-        Animal.death_q.append(list1.pop(0))
+        index = list1.index(animal1)
+        # if dead animal is last in the list
+        if index == len(list1)-1: index -= 1
+        list1.remove(animal1)
+        animal1.die(list1, list2, index, 0)
     if animal2.toughness <= 0:
-        Animal.death_q.append(list2.pop(0))
+        index = list2.index(animal2)
+        # if dead animal is last in the list
+        if index == len(list2)-1: index -= 1
+        animal2.die(list2, list1, index, 1)
+        list2.remove(animal2)
 
     return list1, list2
 
 ### TESTING TESTING ONE TWO THREE TESTING TESTING ###
-list1 = [Cow(), Chicken(), Panda(), Crow(), Dog()]
-list2 = [Penguin(), Fish(), Eel(), Crow(), PolarBear()]
+list1 = [PolarBear(), PolarBear(), PolarBear(), Snake()]
+list2 = [Chicken(), Chicken(), Panda(), Chicken(), Cow()]
+
 
 res1, res2 = fight(list1, list2)
 

@@ -1,6 +1,6 @@
 import random
 import math
-from typing import overload
+
 # initialize "Animal"() to init default values.
 # initialize "Animal"(power, toughness) to init certain power/toughness
 class Animal:
@@ -306,7 +306,7 @@ def attack(list1, list2):
     if len(list1) > 0:
         animal1 = list1[0]
     else: return list1, list2
-    
+
     if len(list2) > 0:
         animal2 = list2[0]
     else: return list1, list2
@@ -356,9 +356,9 @@ def attack(list1, list2):
         index = list1.index(animal1)
         # if dead animal is last in the list
         if index == len(list1)-1: index -= 1
-        print(index)
         animal1.die(list1, list2, index, 0)
         list1.remove(animal1)
+
     if animal2.toughness <= 0:
         index = list2.index(animal2)
         # if dead animal is last in the list

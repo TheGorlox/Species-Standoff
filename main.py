@@ -104,7 +104,7 @@ class ShopScreen(Screen):
                        species+".png")
             im.allow_stretch = 1
             di.add_widget(im)
-            lab = Label(text=species)
+            lab = Label(text=f"{species} - {load_animal(species).power}/{load_animal(species).toughness}")
             di.species = species
             lab.size_hint_y = .2
             di.add_widget(lab)

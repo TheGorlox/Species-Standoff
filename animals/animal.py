@@ -228,9 +228,9 @@ class Dog(Animal):
         self.image = "./images/dog.png"
 
         # special attributes
-        self.dodge_chance = 0
-        self.crit_chance = 0
-        self.crit_multiplier = 1.5
+        self.dodge_chance = .2
+        self.crit_chance = .2
+        self.crit_multiplier = 2
 
         self.neg_effects = {"burned": 0,
                             "poisoned": 0,
@@ -265,7 +265,7 @@ class Cat(Animal):
         self.image = "./images/cat.png"
 
         # special attributes
-        self.dodge_chance = 0
+        self.dodge_chance = .2
         self.crit_chance = 0
         self.crit_multiplier = 1.5
 

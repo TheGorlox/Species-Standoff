@@ -74,7 +74,7 @@ class ShopScreen(Screen):
         DraggableItem()
         for i in range(5):
             species = random.choice(
-                ["cow", "fish", "cat", "panda", "dog", "chicken", "glipglop", "crow", "snake", "polarbear", "penguin", 'eel'])
+                ["cow", "fish", "cat", "panda", "dog", "chicken", "crow", "snake", "polarbear", "penguin", 'eel'])
             di = DraggableItem()
             im = Image(source="./images/" +
                        species+".png")

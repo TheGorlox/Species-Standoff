@@ -738,7 +738,7 @@ def load_animal(animal:str):
     animal_dict = {
         "cow":Cow(), "chicken":Chicken(), "snake":Snake(), "fish":Fish(),
         "eel":Eel(), "dog":Dog(), "cat":Cat(), "crow":Crow(), "penguin":Penguin(),
-        "polarbear":Penguin(), "panda":Panda(), "glipglop":Glipglop(),
+        "polarbear":PolarBear(), "panda":Panda(), "glipglop":Glipglop(),
         "sweebull":Sweebull(), "gnekk":Gnekk(),"loodle":Loodle(), "niugnep":Niugnep(),
         "polaritybear":PolarityBear(),
                     }

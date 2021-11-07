@@ -19,10 +19,15 @@ from kivy.core.audio import SoundLoader
 from kivy.app import App
 import random
 import json
+
 f = open('./data/levels.json',)
 stages = json.load(f)
 current_stage = [0]
+
 pet_array = []
+cleared = 0
+stage_cleared = 0
+
 Builder.load_file("fight.kv")
 # Declare both screens
 
@@ -40,11 +45,30 @@ class SettingsScreen(Screen):
 
 
 class MapScreen(Screen):
+    clear = NumericProperty(cleared)
+    stage_clear = NumericProperty(stage_cleared)
     def change_transition(self, type):
         if type == "fade":
             sm.transition = FadeTransition(duration=0.6)
         if type == "slide":
             sm.transition = SlideTransition()
+    
+    def on_enter(self, *args):
+        print("cleared=",cleared)
+        if cleared == 1:
+            self.children[0].children[1].children[3].disabled = False
+        if cleared%5 == 2:
+            self.children[0].children[1].children[2].disabled = False
+        if cleared%5 == 3:
+            self.children[0].children[1].children[1].disabled = False
+        if cleared%5 == 4:
+            self.children[0].children[1].children[0].disabled = False
+
+        if stage_cleared == 1:
+            self.children[0].children[0].children[1].disabled = False
+        if stage_cleared == 2:
+            self.children[0].children[0].children[0].disabled = False
+
 
 
 class ShopButton(BoxLayout, Button):
@@ -92,7 +116,8 @@ class ShopScreen(Screen):
         animal_instances[1] = []
 
     def bfunction(self):
-        # print(self.children[0].children[1].children)
+        # print(self.children[0].children[1].children)\
+        pet_array.clear()
         for i in self.children[0].children[1].children:
             pet_array.append(i.species)
 
@@ -148,10 +173,14 @@ class FightScreen(Screen):
     global animal_instances
     animal_instances = [[], []]
     def on_enter(self, *args):
-        print("on enter")
         self.stage = current_stage[0]
         self.ended = False
         pet_array.reverse()
+        self.children[0].children[2].text = "Stage "+str(self.stage + 1)
+        self.children[0].children[1].text = "Fight!"
+        self.children[0].children[0].children[1].clear_widgets()
+        self.children[0].children[0].children[0].clear_widgets()
+
         for i in pet_array:
             im = Image(source="./images/"+i+".png")
             im.allow_stretch = 1
@@ -214,8 +243,14 @@ class FightScreen(Screen):
         self.children[0].children[2].text = "You won!"
         self.children[0].children[1].text = "Back to Map"
         self.ended = True
-
+        global cleared
+        cleared = current_stage[0]+1
+        if cleared == 4:
+            stage_cleared == 1
+        if cleared == 9:
+            stage_cleared == 2
         
+        print("cleared=",cleared)
 
     def tie(self):
         self.children[0].children[2].text = "You tied."

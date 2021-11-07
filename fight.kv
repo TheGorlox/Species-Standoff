@@ -51,6 +51,8 @@
                 root.manager.current = 'menu'
 
 <MapScreen>:
+    clear: 0
+    stage_clear: 0
     Image:
         allow_stretch:1
         keep_ratio:0
@@ -78,20 +80,36 @@
                     root.change_transition("slide")
             Button:
                 text: "Level 2"
-                disabled: True
+                disabled: False if root.clear%5 >= 1 else True
                 background_color: .9,.1,.8
+                on_press:
+                    root.change_transition("fade")
+                    root.manager.current = "shop"
+                    root.change_transition("slide")
             Button:
                 text: "Level 3"
-                disabled: True
+                disabled: False if root.clear%5 >= 2 else True
                 background_color: .9,.1,.8
+                on_press:
+                    root.change_transition("fade")
+                    root.manager.current = "shop"
+                    root.change_transition("slide")
             Button:
                 text: "Level 4"
-                disabled: True
+                disabled: False if root.clear%5 >= 3 else True
                 background_color: .9,.1,.8
+                on_press:
+                    root.change_transition("fade")
+                    root.manager.current = "shop"
+                    root.change_transition("slide")
             Button:
                 text: "Level 5"
-                disabled: True
+                disabled: False if root.clear%5 >= 4 else True
                 background_color: .9,.1,.8
+                on_press:
+                    root.change_transition("fade")
+                    root.manager.current = "shop"
+                    root.change_transition("slide")
         BoxLayout:
             orientation: "horizontal"
             padding: 10
@@ -100,11 +118,11 @@
                 background_color: .9,.1,.8
             Button:
                 text: "Tier 2"
-                disabled: True
+                disabled: False if root.stage_clear >= 1 else True
                 background_color: .9,.1,.8
             Button:
                 text: "Tier 3"
-                disabled: True
+                disabled: False if root.stage_clear == 2 else True
                 background_color: .9,.1,.8
 
 #:import create_spacer kivy_garden.draggable._utils._create_spacer
@@ -203,7 +221,7 @@
         orientation: "vertical"
         Label:
             color: 0,0,0
-            text: "Stage "+ str(root.stage + 1)
+            text: ""
             font_size: 60
         Button:
             text: "Fight!"

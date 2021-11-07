@@ -45,6 +45,10 @@ class MapScreen(Screen):
             sm.transition = SlideTransition()
 
 
+class ShopButton(BoxLayout, Button):
+    pass
+
+
 class DraggableItem(KXDraggableBehavior, BoxLayout):
     def on_drag_start(self, touch):
         if(App.get_running_app().money-self.cost <= 0 and self.drag_cls != "order"):
@@ -61,7 +65,7 @@ class DraggableItem(KXDraggableBehavior, BoxLayout):
 class ShopScreen(Screen):
     money = NumericProperty(10)
 
-    def on_enter(self):
+    def on_load(self):
 
         # print(self.children)
         gl = self.ids["sh1"]

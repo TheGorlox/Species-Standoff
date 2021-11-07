@@ -137,6 +137,7 @@
     size_hint_min_y: self.texture_size[1] + dp(10)
 
 <ShopScreen>:
+    doaload: self.on_load()
     Image:
         allow_stretch:1
         keep_ratio:0
@@ -148,15 +149,21 @@
             size_hint_y: .2
             Button:
                 text: "Back"
-            BoxLayout:
+                on_press:
+                    root.manager.transition.direction = 'right'
+                    root.manager.current = 'menu'
+            ShopButton:
                 orientation:"vertical"
-                Label:
-                    text: "Shop"
+                
                 BoxLayout:
                     Label:
+                        size_hint_x: 4
+                        font_size:32
+                        text: "Shop"
+                    Label:
                         text: str(app.money)
+                    
                     Image:
-                        size_hint_x:.1
                         source: "./images/coin.png"
             Button:
                 text: "Continue"

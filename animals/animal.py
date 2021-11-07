@@ -59,6 +59,8 @@ class Cow(Animal):
     def die(self, friends, foes, index):
         if index == -1: return
         friends[index].toughness += self.on_death["milk"]
+        if len(foes) == 0: return
+        (random.choice(foes)).toughness -= self.on_death["egg"]
 
 
 class Chicken(Animal):
@@ -89,9 +91,12 @@ class Chicken(Animal):
                         }
 
     def die(self, friends, foes, index):
+        if index == -1: return
+        friends[index].toughness += self.on_death["milk"]
         if len(foes) == 0: return
         (random.choice(foes)).toughness -= self.on_death["egg"]
-    #     print("egg thrown")
+        if(self.on_death["egg"]) > 0:
+            print("egg thrown")
 
 
 class Snake(Animal):
@@ -122,7 +127,10 @@ class Snake(Animal):
                         }
         
     def die(self, friends, foes, index):
-        pass
+        if index == -1: return
+        friends[index].toughness += self.on_death["milk"]
+        if len(foes) == 0: return
+        (random.choice(foes)).toughness -= self.on_death["egg"]
 
 
 
@@ -154,7 +162,10 @@ class Fish(Animal):
                         }
         
     def die(self, friends, foes, index):
-        pass
+        if index == -1: return
+        friends[index].toughness += self.on_death["milk"]
+        if len(foes) == 0: return
+        (random.choice(foes)).toughness -= self.on_death["egg"]
 
 
 
@@ -186,7 +197,10 @@ class Eel(Animal):
                         }
         
     def die(self, friends, foes, index):
-        pass
+        if index == -1: return
+        friends[index].toughness += self.on_death["milk"]
+        if len(foes) == 0: return
+        (random.choice(foes)).toughness -= self.on_death["egg"]
 
 
 
@@ -218,7 +232,10 @@ class Dog(Animal):
                         }
         
     def die(self, friends, foes, index):
-        pass
+        if index == -1: return
+        friends[index].toughness += self.on_death["milk"]
+        if len(foes) == 0: return
+        (random.choice(foes)).toughness -= self.on_death["egg"]
 
 
 
@@ -250,7 +267,10 @@ class Cat(Animal):
                         }
         
     def die(self, friends, foes, index):
-        pass
+        if index == -1: return
+        friends[index].toughness += self.on_death["milk"]
+        if len(foes) == 0: return
+        (random.choice(foes)).toughness -= self.on_death["egg"]
 
 
 class Crow(Animal):
@@ -263,7 +283,7 @@ class Crow(Animal):
         self.image = "./images/crow.png"
 
         #special attributes
-        self.dodge_chance = .2
+        self.dodge_chance = .25
         self.crit_chance = 0
 
         self.neg_effects = { "burned":0,
@@ -281,7 +301,10 @@ class Crow(Animal):
                         }
         
     def die(self, friends, foes, index):
-        pass
+        if index == -1: return
+        friends[index].toughness += self.on_death["milk"]
+        if len(foes) == 0: return
+        (random.choice(foes)).toughness -= self.on_death["egg"]
 
 
 class Penguin(Animal):
@@ -312,7 +335,10 @@ class Penguin(Animal):
                         }
         
     def die(self, friends, foes, index):
-        pass
+        if index == -1: return
+        friends[index].toughness += self.on_death["milk"]
+        if len(foes) == 0: return
+        (random.choice(foes)).toughness -= self.on_death["egg"]
 
 
 
@@ -344,7 +370,10 @@ class PolarBear(Animal):
                         }
         
     def die(self, friends, foes, index):
-        pass
+        if index == -1: return
+        friends[index].toughness += self.on_death["milk"]
+        if len(foes) == 0: return
+        (random.choice(foes)).toughness -= self.on_death["egg"]
 
 
 
@@ -376,7 +405,10 @@ class Panda(Animal):
                         }
         
     def die(self, friends, foes, index):
-        pass
+        if index == -1: return
+        friends[index].toughness += self.on_death["milk"]
+        if len(foes) == 0: return
+        (random.choice(foes)).toughness -= self.on_death["egg"]
 
 
 
@@ -384,7 +416,7 @@ class Glipglop(Animal):
     def __init__(self, *args, **kwargs):
         self.species = "glip glop"
         self.desc = "always watching. always scared. marinating in poison."
-        self.power, self.toughness = 1, 2
+        self.power, self.toughness = 2, 2
         if args:
             self.power, self.toughness = args[0], args[1]
         self.image = "./images/glipglop.png"
@@ -408,18 +440,21 @@ class Glipglop(Animal):
                         }
         
     def die(self, friends, foes, index):
-        pass
+        if index == -1: return
+        friends[index].toughness += self.on_death["milk"]
+        if len(foes) == 0: return
+        (random.choice(foes)).toughness -= self.on_death["egg"]
 
 
 
-class Sweeble(Animal):
+class Sweebull(Animal):
     def __init__(self, *args, **kwargs):
-        self.species = "sweeble"
+        self.species = "sweebull"
         self.desc = "covered in poison-filled sacks. bad oral hygiene."
         self.power, self.toughness = 0, 5
         if args:
             self.power, self.toughness = args[0], args[1]
-        self.image = "./images/sweeble.png"
+        self.image = "./images/sweebull.png"
 
         #special attributes
         self.dodge_chance = 0
@@ -435,12 +470,15 @@ class Sweeble(Animal):
                         "armor":0,
                         }
 
-        self.on_death = {"milk":0,
+        self.on_death = {"milk":1,
                         "egg":0,
                         }
         
     def die(self, friends, foes, index):
-        pass
+        if index == -1: return
+        friends[index].toughness += self.on_death["milk"]
+        if len(foes) == 0: return
+        (random.choice(foes)).toughness -= self.on_death["egg"]
 
 
 
@@ -472,7 +510,10 @@ class Gnekk(Animal):
                         }
         
     def die(self, friends, foes, index):
-        pass
+        if index == -1: return
+        friends[index].toughness += self.on_death["milk"]
+        if len(foes) == 0: return
+        (random.choice(foes)).toughness -= self.on_death["egg"]
 
 
 
@@ -504,13 +545,18 @@ class Loodle(Animal):
                         }
         
     def die(self, friends, foes, index):
-        pass
+        if index == -1: return
+        friends[index].toughness += self.on_death["milk"]
+        if len(foes) == 0: return
+        (random.choice(foes)).toughness -= self.on_death["egg"]
+
+
 
 class Niugnep(Animal):
     def __init__(self, *args, **kwargs):
         self.species = "inverse penguin"
         self.desc = "not so useless now. also burns."
-        self.power, self.toughness = 3, 2
+        self.power, self.toughness = 3, 4
         if args:
             self.power, self.toughness = args[0], args[1]
         self.image = "./images/loodle.png"
@@ -534,7 +580,10 @@ class Niugnep(Animal):
                         }
         
     def die(self, friends, foes, index):
-        pass
+        if index == -1: return
+        friends[index].toughness += self.on_death["milk"]
+        if len(foes) == 0: return
+        (random.choice(foes)).toughness -= self.on_death["egg"]
 
 
 def fight(friends, foes):
@@ -605,7 +654,7 @@ def attack(friends, foes):
         # if dead animal is last in the list
         if index == len(foes)-1: index -= 1
         foes.remove(foe)
-        foe.die(friends, foes, index)
+        foe.die(foes, friends, index)
 
     return friends, foes
 
@@ -630,8 +679,8 @@ def combat(team, enemy, teammates):
         teammates[teammates.index(team)+1].toughness - enemy.mutator["shock"]
 
 ### TESTING TESTING ONE TWO THREE TESTING TESTING ###
-friends = [PolarBear(), Loodle(), Gnekk(), Snake(), Dog()]
-foes = [Chicken(), Chicken(), Panda(), Glipglop(), Cow()]
+friends = [Eel(),Eel(),Eel(),Eel(),Eel(),Eel(),Eel()]
+foes = [Gnekk(), Gnekk(),Gnekk(),Gnekk(),Gnekk(),Gnekk(),Loodle()]
 
 
 res1, res2 = fight(friends, foes)

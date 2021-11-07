@@ -132,6 +132,9 @@ class Magnet(Factory.Widget):
 class Shop(BoxLayout):
     pass
 
+class FightScreen(Screen):
+    pass
+
 
 # from kivy_garden.draggable import KXDraggableBehavior
 animals = []
@@ -172,6 +175,7 @@ class FightApp(App):
         sm.add_widget(SettingsScreen(name='settings'))
         sm.add_widget(MapScreen(name='map'))
         sm.add_widget(ShopScreen(name='shop'))
+        sm.add_widget(FightScreen(name='fight'))
 
         return sm
 

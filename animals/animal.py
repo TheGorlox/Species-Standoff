@@ -12,8 +12,8 @@ class Animal:
     dodge_chance = 0
     crit_chance = 0
 
-    neg_effects = { "burn":0,
-                    "poison":0,
+    neg_effects = { "burned":0,
+                    "poisoned":0,
                     }
     
     mutator = { "fire":0,
@@ -74,13 +74,14 @@ class Chicken(Animal):
 class Snake(Animal):
     def __init__(self, *args, **kwargs):
         self.species = "snake"
-        self.desc = "a legless abomination from Earth. Shoots venom from its mouth bones."
-        self.power, self.toughness = 3, 1
+        self.desc = "a legless abomination. shoots venom from its mouth bones."
+        self.power, self.toughness = 1, 1
         if args:
             self.power, self.toughness = args[0], args[1]
         self.image = "./images/snake.png"
 
         #special attributes
+        self.mutator["poison"] = 1
 
 
 
@@ -94,14 +95,14 @@ class Fish(Animal):
         self.image = "./images/fish.png"
 
         #special attributes
-        self.crit_chance = .2
+        self.crit_chance = .25
 
 
 
 class Eel(Animal):
     def __init__(self, *args, **kwargs):
         self.species = "eel"
-        self.desc = "a shocking hybrid of the Earth fish and Earth snake."
+        self.desc = "a shocking hybrid of the fish and the snake."
         self.power, self.toughness = 3, 2
         if args:
             self.power, self.toughness = args[0], args[1]
@@ -128,7 +129,7 @@ class Dog(Animal):
 class Cat(Animal):
     def __init__(self, *args, **kwargs):
         self.species = "cat"
-        self.desc = "cat"
+        self.desc = "cat :)"
         self.power, self.toughness = 2, 2
         if args:
             self.power, self.toughness = args[0], args[1]
@@ -190,9 +191,76 @@ class Panda(Animal):
 
 
 
+class Glipglop(Animal):
+    def __init__(self, *args, **kwargs):
+        self.species = "glip glop"
+        self.desc = "always watching. always scared. marinating in poison."
+        self.power, self.toughness = 1, 2
+        if args:
+            self.power, self.toughness = args[0], args[1]
+        self.image = "./images/glipglop.png"
+
+        #special attributes
+        self.mutator["poison"] = 1
+        self.crit_chance = .5
+
+
+
+class Sweeble(Animal):
+    def __init__(self, *args, **kwargs):
+        self.species = "sweeble"
+        self.desc = "covered in poison-filled sacks. bad oral hygiene."
+        self.power, self.toughness = 0, 5
+        if args:
+            self.power, self.toughness = args[0], args[1]
+        self.image = "./images/sweeble.png"
+
+        #special attributes
+        self.mutator["poison"] = 1
+
+
+
+class Gnekk(Animal):
+    def __init__(self, *args, **kwargs):
+        self.species = "g'nekk"
+        self.desc = "all neck. all beak. all terror."
+        self.power, self.toughness = 3, 2
+        if args:
+            self.power, self.toughness = args[0], args[1]
+        self.image = "./images/gnekk.png"
+
+        #special attributes
+        self.crit_chance = .33
+
+
+
+class Loodle(Animal):
+    def __init__(self, *args, **kwargs):
+        self.species = "loodle"
+        self.desc = "remember the eel? this one is on fire."
+        self.power, self.toughness = 1, 2
+        if args:
+            self.power, self.toughness = args[0], args[1]
+        self.image = "./images/loodle.png"
+
+        #special attributes
+        self.mutator["fire"] = 2
+        self.dodge_chance = .25
+
+
+
+
 def fight(list1, list2):
+
     list2.reverse()
     while len(list1) != 0 and len(list2) != 0:
+
+        for animal in list1:
+            print(animal.power, animal.toughness)
+        print("---")
+        for animal in list2:
+            print(animal.power, animal.toughness)
+        print("--------")
 
         #before attack - takes a list and returns it after all status damage is done (burn, poison etc)
         list1 = pre_attack_damage(list1, list2, 0)
@@ -220,8 +288,13 @@ def fight(list1, list2):
 def pre_attack_damage(team, enemy, death_q_index):
     animal: Animal
     for animal in team:
-        animal.toughness -= animal.neg_effects["burn"]
-        animal.toughness -= animal.neg_effects["poison"]
+
+        animal.toughness -= animal.neg_effects["burned"]
+        if(animal.neg_effects["burned"] > 0):
+            animal.neg_effects["burned"] -= 1   # weakens per turn
+
+        animal.toughness -= animal.neg_effects["poisoned"]
+
         if animal.toughness <= 0:
             animal.die(team, enemy, team.index(animal), death_q_index)
             team.remove(animal)
@@ -229,9 +302,14 @@ def pre_attack_damage(team, enemy, death_q_index):
     return team
 
 def attack(list1, list2):
-
-    animal1 = list1[0]
-    animal2 = list2[0]
+    
+    if len(list1) > 0:
+        animal1 = list1[0]
+    else: return list1, list2
+    
+    if len(list2) > 0:
+        animal2 = list2[0]
+    else: return list1, list2
 
     print(f"{animal1.species} - {animal1.power}/{animal1.toughness} vs {animal2.species} - {animal2.power}/{animal2.toughness}")
         
@@ -241,12 +319,18 @@ def attack(list1, list2):
         if random.random() <= animal2.crit_chance:
             # if animal 2 crits
             print(animal2.species, " crit!")
-            animal1.toughness = animal1.toughness - math.floor(animal2.power * 1.5)
+            animal1.toughness = animal1.toughness - math.ceil(animal2.power * 1.5)
 
         # else normal combat
         else: animal1.toughness = animal1.toughness - animal2.power
     else:
         print(animal1.species, " dodged!")
+    
+    # add special negative effects after combat and dodge
+    animal1.neg_effects["burned"] = animal2.mutator["fire"]
+    animal1.neg_effects["poisioned"] = animal2.mutator["poison"]
+    if list1.index(animal1) != len(list1)-1:
+        list1[list1.index(animal1)+1].toughness - animal2.mutator["shock"]
 
     # animal 2 combat
     if random.random() > animal2.dodge_chance:
@@ -261,13 +345,20 @@ def attack(list1, list2):
     else:
         print(animal2.species," dodged!")
     
+    # add special negative effects after combat and dodge
+    animal2.neg_effects["burned"] = animal1.mutator["fire"]
+    animal2.neg_effects["poisioned"] = animal1.mutator["poison"]
+    if list2.index(animal2) != len(list2)-1:
+        list2[list2.index(animal2)+1].toughness - animal1.mutator["shock"]
+    
     # on die
     if animal1.toughness <= 0:
         index = list1.index(animal1)
         # if dead animal is last in the list
         if index == len(list1)-1: index -= 1
-        list1.remove(animal1)
+        print(index)
         animal1.die(list1, list2, index, 0)
+        list1.remove(animal1)
     if animal2.toughness <= 0:
         index = list2.index(animal2)
         # if dead animal is last in the list
@@ -278,8 +369,8 @@ def attack(list1, list2):
     return list1, list2
 
 ### TESTING TESTING ONE TWO THREE TESTING TESTING ###
-list1 = [PolarBear(), PolarBear(), PolarBear(), Snake()]
-list2 = [Chicken(), Chicken(), Panda(), Chicken(), Cow()]
+list1 = [PolarBear(), Loodle(), Gnekk(), Snake(), Dog()]
+list2 = [Chicken(), Chicken(), Panda(), Glipglop(), Cow()]
 
 
 res1, res2 = fight(list1, list2)

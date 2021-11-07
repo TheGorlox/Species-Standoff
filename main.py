@@ -309,6 +309,7 @@ class FightScreen(Screen):
         self.ended = True
 
         global cleared, stage_cleared
+        cleared = App.get_running_app().current_stage+1
         print(cleared)
         if cleared == 4:
             stage_cleared += 1

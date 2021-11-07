@@ -68,11 +68,6 @@ class MapScreen(Screen):
         
         print("cleared=",cleared)
         print("stagecleared=",stage_cleared)
-        if cleared == 0:
-            self.children[0].children[1].children[3].disabled = True
-            self.children[0].children[1].children[2].disabled = True
-            self.children[0].children[1].children[1].disabled = True
-            self.children[0].children[1].children[0].disabled = True
         if cleared == 1:
             self.children[0].children[1].children[3].disabled = False
         if cleared  >= 2:
@@ -87,10 +82,14 @@ class MapScreen(Screen):
             self.children[0].children[1].children[2].disabled = False
             self.children[0].children[1].children[1].disabled = False
             self.children[0].children[1].children[0].disabled = False
+        if cleared % 5 == 0:
+            self.children[0].children[1].children[3].disabled = True
+            self.children[0].children[1].children[2].disabled = True
+            self.children[0].children[1].children[1].disabled = True
+            self.children[0].children[1].children[0].disabled = True
 
         if stage_cleared == 1:
             self.children[0].children[0].children[1].disabled = False
-            App.get_running_app().current_stage = 0
         if stage_cleared == 2:
             self.children[0].children[0].children[0].disabled = False
 
@@ -115,6 +114,7 @@ class DraggableItem(KXDraggableBehavior, BoxLayout):
 class ShopScreen(Screen):
     def on_enter(self):
         sound = songs[0]
+        sound.loop = True
         if sound.state == 'play':
             sound.stop()
             sound = SoundLoader.load('sound/speciesstandoff3.wav')
@@ -311,9 +311,8 @@ class FightScreen(Screen):
         global cleared, stage_cleared
         cleared = App.get_running_app().current_stage+1
         print(cleared)
-        if cleared == 4:
+        if cleared == 5:
             stage_cleared += 1
-            cleared = 0
             
 
     def tie(self):

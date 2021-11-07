@@ -31,6 +31,13 @@ stage_cleared = 0
 Builder.load_file("fight.kv")
 # Declare both screens
 
+sound = SoundLoader.load('./sound/spu1.wav')
+if sound:
+    sound.loop = True
+    sound.play()
+songs = []
+songs.append(sound)
+
 
 class TitleScreen(Screen):
     pass
@@ -106,9 +113,12 @@ class DraggableItem(KXDraggableBehavior, BoxLayout):
 
 
 class ShopScreen(Screen):
-    money = NumericProperty(10)
-
     def on_enter(self):
+        sound = songs[0]
+        if sound.state == 'play':
+            sound.stop()
+            sound = SoundLoader.load('sound/speciesstandoff3.wav')
+            sound.play()
         self.ids["sh1"].clear_widgets()
         animal_instances[0] = []
         animal_instances[1] = []
@@ -240,6 +250,9 @@ class FightScreen(Screen):
         animal_instances[1].reverse()
 
     def run_sim(self):
+        sound = SoundLoader.load('sound/sfx/pixely hit.wav')
+        if sound:
+            sound.play()
         animal_instances[0], animal_instances[1] = fight(
             animal_instances[0], animal_instances[1])
         self.update()
@@ -308,10 +321,7 @@ class FightScreen(Screen):
 
 
 # sound = SoundLoader.load('./sound/speciesstandoff3.wav')
-sound = SoundLoader.load('./sound/spu1.wav')
-if sound:
-    sound.loop = True
-    sound.play()
+
 # sound = SoundLoader.load('./sound/spu1.wav')
 
 

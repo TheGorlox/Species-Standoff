@@ -75,6 +75,7 @@
                 text: "Level 1"
                 background_color: .9,.1,.8
                 on_press:
+                    app.get_running_app().current_stage = 0
                     root.change_transition("fade")
                     root.manager.current = "shop"
                     root.change_transition("slide")
@@ -83,6 +84,7 @@
                 disabled: False if root.clear%5 >= 1 else True
                 background_color: .9,.1,.8
                 on_press:
+                    app.get_running_app().current_stage = 1
                     root.change_transition("fade")
                     root.manager.current = "shop"
                     root.change_transition("slide")
@@ -91,6 +93,7 @@
                 disabled: False if root.clear%5 >= 2 else True
                 background_color: .9,.1,.8
                 on_press:
+                    app.get_running_app().current_stage = 2
                     root.change_transition("fade")
                     root.manager.current = "shop"
                     root.change_transition("slide")
@@ -99,6 +102,7 @@
                 disabled: False if root.clear%5 >= 3 else True
                 background_color: .9,.1,.8
                 on_press:
+                    app.get_running_app().current_stage = 3
                     root.change_transition("fade")
                     root.manager.current = "shop"
                     root.change_transition("slide")
@@ -144,9 +148,7 @@
     canvas.after:
         Color:
             rgba: .5, 1, 0, 1 if root.is_being_dragged else .5
-    Label:
-        size_hint_y:.2
-        text: root.species 
+      
     
 <MyButton@Button>:
     font_size: sp(20)

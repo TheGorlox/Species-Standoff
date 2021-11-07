@@ -22,7 +22,7 @@ import json
 
 f = open('./data/levels.json',)
 stages = json.load(f)
-current_stage = [0]
+
 
 pet_array = []
 cleared = 0
@@ -47,28 +47,28 @@ class SettingsScreen(Screen):
 class MapScreen(Screen):
     clear = NumericProperty(cleared)
     stage_clear = NumericProperty(stage_cleared)
+
     def change_transition(self, type):
         if type == "fade":
             sm.transition = FadeTransition(duration=0.6)
         if type == "slide":
             sm.transition = SlideTransition()
-    
+
     def on_enter(self, *args):
-        print("cleared=",cleared)
+        print("cleared=", cleared)
         if cleared == 1:
             self.children[0].children[1].children[3].disabled = False
-        if cleared%5 == 2:
+        if cleared % 5 == 2:
             self.children[0].children[1].children[2].disabled = False
-        if cleared%5 == 3:
+        if cleared % 5 == 3:
             self.children[0].children[1].children[1].disabled = False
-        if cleared%5 == 4:
+        if cleared % 5 == 4:
             self.children[0].children[1].children[0].disabled = False
 
         if stage_cleared == 1:
             self.children[0].children[0].children[1].disabled = False
         if stage_cleared == 2:
             self.children[0].children[0].children[0].disabled = False
-
 
 
 class ShopButton(BoxLayout, Button):
@@ -169,11 +169,12 @@ class Shop(BoxLayout):
 
 
 class FightScreen(Screen):
-    
+
     global animal_instances
     animal_instances = [[], []]
+
     def on_enter(self, *args):
-        self.stage = current_stage[0]
+        self.stage = App.get_running_app().current_stage
         self.ended = False
         pet_array.reverse()
         self.children[0].children[2].text = "Stage "+str(self.stage + 1)
@@ -189,7 +190,7 @@ class FightScreen(Screen):
             self.children[0].children[0].children[1].add_widget(im)
             animal_instances[0].append(load_animal(i))
 
-        i = stages["stages"][current_stage[0]]
+        i = stages["stages"][App.get_running_app().current_stage]
 
         for j in i:
             animal_instances[1].append(load_animal(j))
@@ -202,9 +203,9 @@ class FightScreen(Screen):
         animal_instances[0].reverse()
         animal_instances[1].reverse()
 
-
     def run_sim(self):
-        animal_instances[0],animal_instances[1] = fight(animal_instances[0], animal_instances[1])
+        animal_instances[0], animal_instances[1] = fight(
+            animal_instances[0], animal_instances[1])
         self.update()
         if len(animal_instances[0]) == 0 and len(animal_instances[1]) == 0:
             self.tie()
@@ -213,12 +214,11 @@ class FightScreen(Screen):
                 self.lose()
             elif len(animal_instances[1]) == 0:
                 self.win()
-        
-    
+
     def update(self):
         self.children[0].children[0].children[1].clear_widgets()
         for i in animal_instances[0]:
-            string = i.species.replace(" ","").replace("'","")
+            string = i.species.replace(" ", "").replace("'", "")
             im = Image(source="./images/"+string+".png")
             im.allow_stretch = 1
             im.size_hint_y = .5
@@ -227,7 +227,7 @@ class FightScreen(Screen):
 
         self.children[0].children[0].children[0].clear_widgets()
         for j in animal_instances[1]:
-            string = j.species.replace(" ","").replace("'","")
+            string = j.species.replace(" ", "").replace("'", "")
             im = Image(source="./images/"+string+".png")
             im.allow_stretch = 1
             im.size_hint_y = .5
@@ -240,17 +240,18 @@ class FightScreen(Screen):
         self.ended = True
 
     def win(self):
+        App.get_running_app().money += 5
         self.children[0].children[2].text = "You won!"
         self.children[0].children[1].text = "Back to Map"
         self.ended = True
         global cleared
-        cleared = current_stage[0]+1
+        cleared = App.get_running_app().current_stage+1
         if cleared == 4:
             stage_cleared == 1
         if cleared == 9:
             stage_cleared == 2
-        
-        print("cleared=",cleared)
+
+        print("cleared=", cleared)
 
     def tie(self):
         self.children[0].children[2].text = "You tied."
@@ -268,6 +269,7 @@ if sound:
 
 class FightApp(App):
     money = NumericProperty(10)
+    current_stage = NumericProperty(0)
 
     def build(self):
 

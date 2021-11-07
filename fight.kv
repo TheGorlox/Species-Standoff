@@ -139,10 +139,23 @@
 <ShopScreen>:
     BoxLayout:
         orientation:"vertical"
+        
         BoxLayout:
-            Label:
-                text: str(app.money)
-
+            size_hint_y: .2
+            Button:
+                text: "Back"
+            BoxLayout:
+                orientation:"vertical"
+                Label:
+                    text: "Shop"
+                BoxLayout:
+                    Label:
+                        text: str(app.money)
+                    Image:
+                        size_hint_x:.1
+                        source: "./images/coin.png"
+            Button:
+                text: "Continue"
         ReorderableGridLayout:
             id:play
             spacing: 10

@@ -57,18 +57,21 @@ class Magnet(Factory.Widget):
 
 
 class Shop(BoxLayout):
-    cash = NumericProperty(0)
+    cash = NumericProperty(10)
 
 
 KV_CODE = '''
 #:import create_spacer kivy_garden.draggable._utils._create_spacer
 <ReorderableGridLayout@KXReorderableBehavior+GridLayout>:
 <DraggableItem>:
+    orientation: "vertical"
     do_anim: not self.is_being_dragged
     anim_duration: .2
-    drag_cls: 'test'
+    drag_cls: 'buy'
     drag_timeout: 50
     font_size: 30
+    species:''
+    cost:0
     on_drag_success: self.myfunc()
     opacity: .5 if self.is_being_dragged else 1.
     size_hint_min: 50, 50
@@ -80,6 +83,9 @@ KV_CODE = '''
         Line:
             width: 2 if root.is_being_dragged else 1
             rectangle: [*self.pos, *self.size, ]
+    Label:
+        size_hint_y:.2
+        text: root.species 
     
 <MyButton@Button>:
     font_size: sp(20)
@@ -100,7 +106,7 @@ Shop:
         id:play
         spacing: 10
         padding: 10
-        drag_classes: ['test', ]
+        drag_classes: ['buy','sell','order' ]
         cols: 6
         spacer_widgets:
             [create_spacer(color=color)
@@ -109,7 +115,7 @@ Shop:
         id:sh1
         spacing: 10
         padding: 10
-        drag_classes: ['test', ]
+        drag_classes: [ ]
         cols: 6
         spacer_widgets:
             [create_spacer(color=color)
@@ -119,10 +125,19 @@ Shop:
 
 
 class DraggableItem(KXDraggableBehavior, BoxLayout):
+    def on_drag_start(self, touch):
+        if(App.get_running_app().root.cash-self.cost <= 0):
+            self.drag_cancel()
+
     def myfunc(self):
-        app = App.get_running_app()
-        app.root.cash = len(app.root.children[1].children)
-        
+        if(self.drag_cls == "buy"):
+            App.get_running_app().root.cash -= self.cost
+            self.drag_cls = 'order'
+
+        print(self.species)
+        # app = App.get_running_app()
+        # = len(app.root.children[1].children)
+
 
 class SampleApp(App):
     def build(self):
@@ -131,11 +146,16 @@ class SampleApp(App):
     def on_start(self):
         gl = self.root.ids.sh1
         DraggableItem = Factory.DraggableItem
+
         DraggableItem()
         for i in range(5):
+            species = random.choice(
+                ["cow", "fish", "cat", "panda", "dog", "chicken", "glipglop", "crow", "snake", "polarbear", "pengiun", 'eel'])
             di = DraggableItem()
-            di.add_widget(Image(source="./images/"+random.choice(
-                ["cow", "fish", "cat", "panda", "dog", "chicken", "glipglop"])+".png"))
+            di.add_widget(Image(source="./images/" +
+                          species+".png"))
+            di.species = species
+            di.cost = 3
             gl.add_widget(di)
 
 

@@ -1,5 +1,6 @@
 from kivy.core.audio import SoundLoader
 from kivy.app import App
+import random
 from kivy.lang import Builder
 from kivy.uix.screenmanager import ScreenManager, Screen, SlideTransition
 from kivy.uix.screenmanager import FadeTransition
@@ -8,8 +9,17 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.image import Image
 from animals.animal import *
+from kivy.clock import Clock
 from kivy.core.audio import SoundLoader
 from kivy.core.audio import Sound
+from kivy.factory import Factory
+from kivy.properties import (
+    NumericProperty, StringProperty, BooleanProperty,
+)
+import asynckivy as ak
+from kivy_garden.draggable import KXDraggableBehavior
+
+
 Builder.load_file("fight.kv")
 # Declare both screens
 
@@ -34,7 +44,83 @@ class MapScreen(Screen):
             sm.transition = SlideTransition()
 
 
+class DraggableItem(KXDraggableBehavior, BoxLayout):
+    def on_drag_start(self, touch):
+        if(App.get_running_app().money-self.cost <= 0 and self.drag_cls != "order"):
+            self.drag_cancel()
+
+    def myfunc(self):
+        if(self.drag_cls == "buy"):
+            App.get_running_app().money -= self.cost
+            self.drag_cls = 'order'
+
+        print(self.species)
+
+
 class ShopScreen(Screen):
+    money = NumericProperty(10)
+
+    def on_enter(self):
+
+        # print(self.children)
+        gl = self.ids["sh1"]
+        DraggableItem = Factory.DraggableItem
+
+        DraggableItem()
+        for i in range(5):
+            species = random.choice(
+                ["cow", "fish", "cat", "panda", "dog", "chicken", "glipglop", "crow", "snake", "polarbear", "penguin", 'eel'])
+            di = DraggableItem()
+            di.add_widget(Image(source="./images/" +
+                          species+".png"))
+            di.species = species
+            di.cost = 3
+            gl.add_widget(di)
+
+
+class Magnet(Factory.Widget):
+    '''
+    Inspired by
+    https://github.com/kivy-garden/garden.magnet
+    '''
+    do_anim = BooleanProperty(True)
+    anim_duration = NumericProperty(1)
+    anim_transition = StringProperty('out_quad')
+
+    # default value of the instance attributes
+    _coro = ak.sleep_forever()
+
+    def __init__(self, **kwargs):
+        self._anim_trigger = trigger = \
+            Clock.create_trigger(self._start_anim, -1)
+        super().__init__(**kwargs)
+        self.fbind('pos', trigger)
+        self.fbind('size', trigger)
+
+    def add_widget(self, widget, *args, **kwargs):
+        if self.children:
+            raise ValueError('Magnet can have only one child')
+        widget.pos = self.pos
+        widget.size = self.size
+        return super().add_widget(widget, *args, **kwargs)
+
+    def _start_anim(self, *args):
+        if self.children:
+            child = self.children[0]
+            self._coro.close()
+            if not self.do_anim:
+                child.pos = self.pos
+                child.size = self.size
+                return
+            self._coro = ak.start(ak.animate(
+                child,
+                d=self.anim_duration,
+                t=self.anim_transition,
+                x=self.x, y=self.y, width=self.width, height=self.height,
+            ))
+
+
+class Shop(BoxLayout):
     pass
 
 
@@ -59,10 +145,6 @@ class BoxLayoutExample(BoxLayout):
     pass
 
 
-class MainWidget():
-    pass
-
-
 sound = SoundLoader.load('./sound/speciesstandoff3.wav')
 if sound:
     sound.loop = True
@@ -71,6 +153,8 @@ if sound:
 
 
 class FightApp(App):
+    money = NumericProperty(10)
+
     def build(self):
 
         global sm

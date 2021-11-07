@@ -55,7 +55,7 @@ class MapScreen(Screen):
 
     def onload(self):
         global cleared, stage_cleared
-        cleared = App.get_running_app().current_stage+1
+        cleared = App.get_running_app().current_stage
         stage_cleared = App.get_running_app().current_tier
 
     def change_transition(self, type):

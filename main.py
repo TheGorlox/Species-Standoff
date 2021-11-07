@@ -87,6 +87,10 @@ class ShopScreen(Screen):
             di.cost = 3
             gl.add_widget(di)
 
+    def on_enter(self):
+        animal_instances[0] = []
+        animal_instances[1] = []
+
     def bfunction(self):
         # print(self.children[0].children[1].children)
         for i in self.children[0].children[1].children:
@@ -140,9 +144,14 @@ class Shop(BoxLayout):
 
 
 class FightScreen(Screen):
+    
+    global animal_instances
+    animal_instances = [[], []]
     def on_enter(self, *args):
+        print("on enter")
+        self.stage = current_stage[0]
+        self.ended = False
         pet_array.reverse()
-        animal_instances = [[], []]
         for i in pet_array:
             im = Image(source="./images/"+i+".png")
             im.allow_stretch = 1
@@ -161,25 +170,57 @@ class FightScreen(Screen):
             im.pos_hint = {"center_y": .5}
             self.children[0].children[0].children[0].add_widget(im)
 
-        # from kivy_garden.draggable import KXDraggableBehavior
-animals = []
-# for i in range(5):
-animals.append(Cow())
-animals.append(Chicken())
-animals.append(Fish())
+        animal_instances[0].reverse()
+        animal_instances[1].reverse()
 
 
-class BoxLayoutExample(BoxLayout):
-    def __init__(self, **kwargs):
-        super(BoxLayoutExample, self).__init__(**kwargs)
-        for i in animals:
-            # print(i.image)
-            self.ids.test.add_widget(Image(source=i.image))
+    def run_sim(self):
+        animal_instances[0],animal_instances[1] = fight(animal_instances[0], animal_instances[1])
+        self.update()
+        if len(animal_instances[0]) == 0 and len(animal_instances[1]) == 0:
+            self.tie()
+        else:
+            if len(animal_instances[0]) == 0:
+                self.lose()
+            elif len(animal_instances[1]) == 0:
+                self.win()
+        
+    
+    def update(self):
+        self.children[0].children[0].children[1].clear_widgets()
+        for i in animal_instances[0]:
+            string = i.species.replace(" ","").replace("'","")
+            im = Image(source="./images/"+string+".png")
+            im.allow_stretch = 1
+            im.size_hint_y = .5
+            im.pos_hint = {"center_y": .5}
+            self.children[0].children[0].children[1].add_widget(im)
 
-    def say_hello(self):
-        self.ids.test.add_widget(Image(source='./images/cow.png'))
+        self.children[0].children[0].children[0].clear_widgets()
+        for j in animal_instances[1]:
+            string = j.species.replace(" ","").replace("'","")
+            im = Image(source="./images/"+string+".png")
+            im.allow_stretch = 1
+            im.size_hint_y = .5
+            im.pos_hint = {"center_y": .5}
+            self.children[0].children[0].children[0].add_widget(im)
 
-    pass
+    def lose(self):
+        self.children[0].children[2].text = "You lost!"
+        self.children[0].children[1].text = "Back to Map"
+        self.ended = True
+
+    def win(self):
+        self.children[0].children[2].text = "You won!"
+        self.children[0].children[1].text = "Back to Map"
+        self.ended = True
+
+        
+
+    def tie(self):
+        self.children[0].children[2].text = "You tied."
+        self.children[0].children[1].text = "Back to Map"
+        self.ended = True
 
 
 # sound = SoundLoader.load('./sound/speciesstandoff3.wav')

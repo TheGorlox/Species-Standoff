@@ -30,6 +30,7 @@ class Animal:
 
 
 
+# TIER1
 class Cow(Animal):
     def __init__(self, *args, **kwargs):
         self.species = "cow"
@@ -106,7 +107,7 @@ class Snake(Animal):
     def __init__(self, *args, **kwargs):
         self.species = "snake"
         self.desc = "a legless abomination. shoots venom from its mouth bones."
-        self.power, self.toughness = 1, 1
+        self.power, self.toughness = 2, 2
         if args:
             self.power, self.toughness = args[0], args[1]
         self.image = "./images/snake.png"
@@ -178,7 +179,7 @@ class Eel(Animal):
     def __init__(self, *args, **kwargs):
         self.species = "eel"
         self.desc = "a shocking hybrid of the fish and the snake."
-        self.power, self.toughness = 3, 2
+        self.power, self.toughness = 1, 3
         if args:
             self.power, self.toughness = args[0], args[1]
         self.image = "./images/eel.png"
@@ -270,7 +271,7 @@ class Cat(Animal):
                         "armor":0,
                         }
 
-        self.on_death = {"milk":0,
+        self.on_death = {"milk":1,
                         "egg":0,
                         }
         
@@ -291,7 +292,7 @@ class Crow(Animal):
         self.image = "./images/crow.png"
 
         #special attributes
-        self.dodge_chance = .25
+        self.dodge_chance = .33
         self.crit_chance = 0
         self.crit_multiplier = 1.5
 
@@ -356,7 +357,7 @@ class PolarBear(Animal):
     def __init__(self, *args, **kwargs):
         self.species = "polarbear"
         self.desc = "a mean and icy panda bear"
-        self.power, self.toughness = 4, 2
+        self.power, self.toughness = 4, 3
         if args:
             self.power, self.toughness = args[0], args[1]
         self.image = "./images/polarbear.png"
@@ -392,7 +393,7 @@ class Panda(Animal):
     def __init__(self, *args, **kwargs):
         self.species = "panda"
         self.desc = "a soft and harmless polar bear"
-        self.power, self.toughness = 2, 4
+        self.power, self.toughness = 2, 5
         if args:
             self.power, self.toughness = args[0], args[1]
         self.image = "./images/panda.png"
@@ -424,6 +425,7 @@ class Panda(Animal):
 
 
 
+# TIER2
 class Glipglop(Animal):
     def __init__(self, *args, **kwargs):
         self.species = "glip glop"
@@ -436,7 +438,7 @@ class Glipglop(Animal):
         #special attributes
         self.dodge_chance = 0
         self.crit_chance = .5
-        self.crit_multiplier = 1.5
+        self.crit_multiplier = 2
 
         self.neg_effects = { "burned":0,
                             "poisoned":0,
@@ -464,7 +466,7 @@ class Sweebull(Animal):
     def __init__(self, *args, **kwargs):
         self.species = "sweebull"
         self.desc = "covered in poison-filled sacks. bad oral hygiene."
-        self.power, self.toughness = 0, 5
+        self.power, self.toughness = 0, 6
         if args:
             self.power, self.toughness = args[0], args[1]
         self.image = "./images/sweebull.png"
@@ -506,7 +508,7 @@ class Gnekk(Animal):
         self.image = "./images/gnekk.png"
 
         #special attributes
-        self.dodge_chance = 0
+        self.dodge_chance = .1
         self.crit_chance = .33
         self.crit_multiplier = 1.5
 
@@ -521,7 +523,7 @@ class Gnekk(Animal):
                         }
 
         self.on_death = {"milk":0,
-                        "egg":0,
+                        "egg":1,
                         }
         
     def die(self, friends, foes, index):
@@ -572,10 +574,10 @@ class Niugnep(Animal):
     def __init__(self, *args, **kwargs):
         self.species = "inverse penguin"
         self.desc = "not so useless now. also burns."
-        self.power, self.toughness = 3, 4
+        self.power, self.toughness = 2, 4
         if args:
             self.power, self.toughness = args[0], args[1]
-        self.image = "./images/loodle.png"
+        self.image = "./images/niugnep.png"
 
         #special attributes
         self.dodge_chance = 0
@@ -603,10 +605,47 @@ class Niugnep(Animal):
         (random.choice(foes)).toughness -= self.on_death["egg"]
 
 
+
+class PolarityBear(Animal):
+    def __init__(self, *args, **kwargs):
+        self.species = "polarity bear"
+        self.desc = "EXTRA mean panda bear."
+        self.power, self.toughness = 4, 5
+        if args:
+            self.power, self.toughness = args[0], args[1]
+        self.image = "./images/polaritybear.png"
+
+        #special attributes
+        self.dodge_chance = 0.1
+        self.crit_chance = 0
+        self.crit_multiplier = 1.5
+
+        self.neg_effects = { "burned":0,
+                            "poisoned":0,
+                            }
+        
+        self.mutator = { "fire":0,
+                        "poison":0,
+                        "shock":3,
+                        "armor":0,
+                        }
+
+        self.on_death = {"milk":0,
+                        "egg":0,
+                        }
+        
+    def die(self, friends, foes, index):
+        if index == -1: return
+        friends[index].toughness += self.on_death["milk"]
+        if len(foes) == 0: return
+        (random.choice(foes)).toughness -= self.on_death["egg"]
+
+
+
 def fight(friends, foes):
 
     foes.reverse()
-    while len(friends) != 0 and len(foes) != 0:
+    if len(friends) != 0 and len(foes) != 0:
 
         #before attack - takes a list and returns it after all status damage is done (burn, poison etc)
         friends = pre_attack_damage(friends, foes)
@@ -693,21 +732,22 @@ def combat(team, enemy, teammates):
     team.neg_effects["poisoned"] = enemy.mutator["poison"]
 
     if teammates.index(team) != len(teammates)-1:
-        teammates[teammates.index(team)+1].toughness - enemy.mutator["shock"]
+        teammates[teammates.index(team)+1].toughness -= enemy.mutator["shock"]
 
 def load_animal(animal:str):
     animal_dict = {
         "cow":Cow(), "chicken":Chicken(), "snake":Snake(), "fish":Fish(),
         "eel":Eel(), "dog":Dog(), "cat":Cat(), "crow":Crow(), "penguin":Penguin(),
         "polarbear":Penguin(), "panda":Panda(), "glipglop":Glipglop(),
-        "sweebull":Sweebull(), "gnekk":Gnekk(),"loodle":Loodle(), "niugnep":Niugnep()
+        "sweebull":Sweebull(), "gnekk":Gnekk(),"loodle":Loodle(), "niugnep":Niugnep(),
+        "polaritybear":PolarityBear(),
                     }
 
     return animal_dict[animal]
 
 ### TESTING TESTING ONE TWO THREE TESTING TESTING ###
-friends = [Eel(),Eel(),Eel(),Eel(),Eel(),Eel(),Eel()]
-foes = [Gnekk(), Gnekk(),Gnekk(),Gnekk(),Gnekk(),Gnekk(),Loodle()]
+friends = [Eel(),Cow(),PolarBear(),Panda(),Dog(),Chicken()]
+foes = [Gnekk(),Loodle(),Loodle(),Niugnep(),PolarityBear(),Sweebull()]
 
 
 res1, res2 = fight(friends, foes)

@@ -10,6 +10,8 @@
             
         Label:
             font_size: 72
+            bold: True
+            color: .9,.1,.8, 0.5
             text: "Species Standoff"
         BoxLayout:
             padding: 40
@@ -191,6 +193,8 @@
                 for color in "#000044 #002200 #440000".split()]
 
 <FightScreen>:
+    stage: root.stage
+    ended: False
     Image:
         allow_stretch:1
         keep_ratio:0
@@ -198,8 +202,14 @@
     BoxLayout:
         orientation: "vertical"
         Label:
-            text: "Stage x"
-            font_size: 30
+            color: 0,0,0
+            text: "Stage "+ str(root.stage + 1)
+            font_size: 60
+        Button:
+            text: "Fight!"
+            background_color: 0, .8, .6, 0.5
+            on_press:
+                root.manager.current = 'map' if root.ended else root.run_sim()
         BoxLayout:
             BoxLayout:
                 id:friends

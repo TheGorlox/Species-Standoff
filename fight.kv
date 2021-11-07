@@ -53,6 +53,7 @@
 <MapScreen>:
     clear: 0
     stage_clear: 0
+    onl: root.onload()
     Image:
         allow_stretch:1
         keep_ratio:0
@@ -75,7 +76,7 @@
                 text: "Level 1"
                 background_color: .9,.1,.8
                 on_press:
-                    app.get_running_app().current_stage = 0
+                    app.get_running_app().current_stage = 0 + 5*app.get_running_app().current_tier
                     root.change_transition("fade")
                     root.manager.current = "shop"
                     root.change_transition("slide")
@@ -84,7 +85,7 @@
                 disabled: False if root.clear%5 >= 1 else True
                 background_color: .9,.1,.8
                 on_press:
-                    app.get_running_app().current_stage = 1
+                    app.get_running_app().current_stage = 1 + 5*app.get_running_app().current_tier
                     root.change_transition("fade")
                     root.manager.current = "shop"
                     root.change_transition("slide")
@@ -93,7 +94,7 @@
                 disabled: False if root.clear%5 >= 2 else True
                 background_color: .9,.1,.8
                 on_press:
-                    app.get_running_app().current_stage = 2
+                    app.get_running_app().current_stage = 2 + 5*app.get_running_app().current_tier
                     root.change_transition("fade")
                     root.manager.current = "shop"
                     root.change_transition("slide")
@@ -102,7 +103,7 @@
                 disabled: False if root.clear%5 >= 3 else True
                 background_color: .9,.1,.8
                 on_press:
-                    app.get_running_app().current_stage = 3
+                    app.get_running_app().current_stage = 3 + 5*app.get_running_app().current_tier
                     root.change_transition("fade")
                     root.manager.current = "shop"
                     root.change_transition("slide")
@@ -111,7 +112,7 @@
                 disabled: False if root.clear%5 >= 4 else True
                 background_color: .9,.1,.8
                 on_press:
-                    app.get_running_app().current_stage = 4
+                    app.get_running_app().current_stage = 4 + 5*app.get_running_app().current_tier
                     root.change_transition("fade")
                     root.manager.current = "shop"
                     root.change_transition("slide")
@@ -123,11 +124,13 @@
                 background_color: .9,.1,.8
             Button:
                 text: "Tier 2"
-                disabled: False if root.stage_clear >= 1 else True
+                disabled: True if root.stage_clear < 1 else False
                 background_color: .9,.1,.8
+                on_press:
+                    app.get_running_app().current_stage = 0
             Button:
                 text: "Tier 3"
-                disabled: False if root.stage_clear == 2 else True
+                disabled: True if root.stage_clear < 2 else False
                 background_color: .9,.1,.8
 
 #:import create_spacer kivy_garden.draggable._utils._create_spacer
@@ -197,7 +200,7 @@
             spacing: 10
             padding: 10
             drag_classes: ['buy','sell','order' ]
-            cols: 6
+            cols: 7
             spacer_widgets:
                 [create_spacer(color=color)
                 for color in "#11ee66".split()]

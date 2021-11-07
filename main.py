@@ -45,8 +45,11 @@ class SettingsScreen(Screen):
 
 
 class MapScreen(Screen):
-    clear = NumericProperty(cleared)
-    stage_clear = NumericProperty(stage_cleared)
+
+    def onload(self):
+        global cleared, stage_cleared
+        cleared = App.get_running_app().current_stage+1
+        stage_cleared = App.get_running_app().current_tier
 
     def change_transition(self, type):
         if type == "fade":
@@ -55,17 +58,32 @@ class MapScreen(Screen):
             sm.transition = SlideTransition()
 
     def on_enter(self, *args):
+        
+        print("cleared=",cleared)
+        print("stagecleared=",stage_cleared)
+        if cleared == 0:
+            self.children[0].children[1].children[3].disabled = True
+            self.children[0].children[1].children[2].disabled = True
+            self.children[0].children[1].children[1].disabled = True
+            self.children[0].children[1].children[0].disabled = True
         if cleared == 1:
             self.children[0].children[1].children[3].disabled = False
-        if cleared % 5 == 2:
+        if cleared  >= 2:
+            self.children[0].children[1].children[3].disabled = False
             self.children[0].children[1].children[2].disabled = False
-        if cleared % 5 == 3:
+        if cleared >= 3:
+            self.children[0].children[1].children[3].disabled = False
+            self.children[0].children[1].children[2].disabled = False
             self.children[0].children[1].children[1].disabled = False
-        if cleared % 5 == 4:
+        if cleared >= 4:
+            self.children[0].children[1].children[3].disabled = False
+            self.children[0].children[1].children[2].disabled = False
+            self.children[0].children[1].children[1].disabled = False
             self.children[0].children[1].children[0].disabled = False
 
         if stage_cleared == 1:
             self.children[0].children[0].children[1].disabled = False
+            App.get_running_app().current_stage = 0
         if stage_cleared == 2:
             self.children[0].children[0].children[0].disabled = False
 
@@ -76,8 +94,8 @@ class ShopButton(BoxLayout, Button):
 
 class DraggableItem(KXDraggableBehavior, BoxLayout):
     def on_drag_start(self, touch):
-        print(App.get_running_app().total_pets)
-        if((App.get_running_app().money-self.cost < 0 and self.drag_cls != "order") or App.get_running_app().total_pets >= 7):
+        if((App.get_running_app().money-self.cost < 0 and self.drag_cls != "order") or
+             (App.get_running_app().total_pets >= 7 and self.drag_cls != "order")):
             self.drag_cancel()
 
     def myfunc(self):
@@ -275,12 +293,13 @@ class FightScreen(Screen):
         self.children[0].children[2].text = "You won!"
         self.children[0].children[1].text = "Back to Map"
         self.ended = True
-        global cleared
-        cleared = App.get_running_app().current_stage+1
+
+        global cleared, stage_cleared
+        print(cleared)
         if cleared == 4:
-            stage_cleared == 1
-        if cleared == 9:
-            stage_cleared == 2
+            stage_cleared += 1
+            cleared = 0
+            
 
     def tie(self):
         self.children[0].children[2].text = "You tied."
@@ -299,7 +318,9 @@ if sound:
 class FightApp(App):
     money = NumericProperty(10)
     current_stage = NumericProperty(0)
+    current_tier = NumericProperty(0)
     total_pets = NumericProperty(0)
+    
 
     def build(self):
 

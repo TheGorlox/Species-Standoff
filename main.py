@@ -1,25 +1,27 @@
-from kivy.core.audio import SoundLoader
-from kivy.app import App
-import random
-from kivy.lang import Builder
-from kivy.uix.screenmanager import ScreenManager, Screen, SlideTransition
-from kivy.uix.screenmanager import FadeTransition
-from kivy.uix.button import Button
-from kivy.uix.boxlayout import BoxLayout
-from kivy.uix.gridlayout import GridLayout
-from kivy.uix.image import Image
-from kivy.uix.label import Label
-from animals.animal import *
-from kivy.clock import Clock
-from kivy.core.audio import SoundLoader
-from kivy.core.audio import Sound
-from kivy.factory import Factory
+from kivy_garden.draggable import KXDraggableBehavior
+import asynckivy as ak
 from kivy.properties import (
     NumericProperty, StringProperty, BooleanProperty,
 )
-import asynckivy as ak
-from kivy_garden.draggable import KXDraggableBehavior
-
+from kivy.factory import Factory
+from kivy.core.audio import Sound
+from kivy.clock import Clock
+from animals.animal import *
+from kivy.uix.label import Label
+from kivy.uix.image import Image
+from kivy.uix.gridlayout import GridLayout
+from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.button import Button
+from kivy.uix.screenmanager import FadeTransition
+from kivy.uix.screenmanager import ScreenManager, Screen, SlideTransition
+from kivy.lang import Builder
+from kivy.core.audio import SoundLoader
+from kivy.app import App
+import random
+import json
+f = open('./data/levels.json',)
+stages = json.load(f)
+current_stage = [0]
 pet_array = []
 Builder.load_file("fight.kv")
 # Declare both screens
@@ -140,16 +142,24 @@ class Shop(BoxLayout):
 class FightScreen(Screen):
     def on_enter(self, *args):
         pet_array.reverse()
-        animal_instances = []
+        animal_instances = [[], []]
         for i in pet_array:
             im = Image(source="./images/"+i+".png")
             im.allow_stretch = 1
             im.size_hint_y = .5
-            im.pos_hint = {"center_y":.5}
+            im.pos_hint = {"center_y": .5}
             self.children[0].children[0].children[1].add_widget(im)
-            animal_instances.append(load_animal(i))
-        
-            
+            animal_instances[0].append(load_animal(i))
+
+        i = stages["stages"][current_stage[0]]
+
+        for j in i:
+            animal_instances[1].append(load_animal(j))
+            im = Image(source="./images/"+j+".png")
+            im.allow_stretch = 1
+            im.size_hint_y = .5
+            im.pos_hint = {"center_y": .5}
+            self.children[0].children[0].children[0].add_widget(im)
 
         # from kivy_garden.draggable import KXDraggableBehavior
 animals = []

@@ -72,8 +72,10 @@ class ShopScreen(Screen):
             species = random.choice(
                 ["cow", "fish", "cat", "panda", "dog", "chicken", "glipglop", "crow", "snake", "polarbear", "penguin", 'eel'])
             di = DraggableItem()
-            di.add_widget(Image(source="./images/" +
-                          species+".png"))
+            im = Image(source="./images/" +
+                       species+".png")
+            im.allow_stretch = 1
+            di.add_widget(im)
             lab = Label(text=species)
             lab.size_hint_y = .2
             di.add_widget(lab)

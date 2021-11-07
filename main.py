@@ -76,11 +76,13 @@ class ShopButton(BoxLayout, Button):
 
 class DraggableItem(KXDraggableBehavior, BoxLayout):
     def on_drag_start(self, touch):
-        if(App.get_running_app().money-self.cost < 0 and self.drag_cls != "order"):
+        print(App.get_running_app().total_pets)
+        if((App.get_running_app().money-self.cost < 0 and self.drag_cls != "order") or App.get_running_app().total_pets >= 7):
             self.drag_cancel()
 
     def myfunc(self):
         if(self.drag_cls == "buy"):
+            App.get_running_app().total_pets += 1
             App.get_running_app().money -= self.cost
             self.drag_cls = 'order'
 
@@ -125,6 +127,7 @@ class ShopScreen(Screen):
         if(len(self.ids["play"].children) > 0):
             self.ids["play"].remove_widget(self.ids["play"].children[0])
             App.get_running_app().money += 1
+            App.get_running_app().total_pets -= 1
 
 
 class Magnet(Factory.Widget):
@@ -199,7 +202,6 @@ class FightScreen(Screen):
             im.size_hint_y = .5
             im.pos_hint = {"center_y": .5}
             self.children[0].children[0].children[1].add_widget(bl)
-            
 
         i = stages["stages"][App.get_running_app().current_stage]
 
@@ -246,9 +248,8 @@ class FightScreen(Screen):
             im.pos_hint = {"center_y": .5}
             self.children[0].children[0].children[1].add_widget(bl)
 
-
         self.children[0].children[0].children[0].clear_widgets()
-        animal_instances[1].reverse()
+        # animal_instances[1].reverse()
         for j in animal_instances[1]:
             bl = BoxLayout(orientation="vertical")
             string = j.species.replace(" ", "").replace("'", "")
@@ -298,6 +299,7 @@ if sound:
 class FightApp(App):
     money = NumericProperty(10)
     current_stage = NumericProperty(0)
+    total_pets = NumericProperty(0)
 
     def build(self):
 

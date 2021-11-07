@@ -111,6 +111,7 @@
                 disabled: False if root.clear%5 >= 4 else True
                 background_color: .9,.1,.8
                 on_press:
+                    app.get_running_app().current_stage = 4
                     root.change_transition("fade")
                     root.manager.current = "shop"
                     root.change_transition("slide")
@@ -220,11 +221,13 @@
     BoxLayout:
         orientation: "vertical"
         Label:
+            size_hint_y:.5
             color: 0,0,0
             text: ""
             font_size: 60
         Button:
             text: "Fight!"
+            size_hint_y:.5
             background_color: 0, .8, .6, 0.5
             on_press:
                 root.manager.current = 'map' if root.ended else root.run_sim()

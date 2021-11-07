@@ -201,6 +201,7 @@ class FightScreen(Screen):
             self.children[0].children[0].children[0].add_widget(im)
 
         animal_instances[0].reverse()
+        print("reverse")
         animal_instances[1].reverse()
 
     def run_sim(self):
@@ -217,6 +218,8 @@ class FightScreen(Screen):
 
     def update(self):
         self.children[0].children[0].children[1].clear_widgets()
+        animal_instances[0].reverse()
+        animal_instances[1].reverse()
         for i in animal_instances[0]:
             string = i.species.replace(" ", "").replace("'", "")
             im = Image(source="./images/"+string+".png")
@@ -234,6 +237,9 @@ class FightScreen(Screen):
             im.pos_hint = {"center_y": .5}
             self.children[0].children[0].children[0].add_widget(im)
 
+        animal_instances[0].reverse()
+        animal_instances[1].reverse()
+
     def lose(self):
         self.children[0].children[2].text = "You lost!"
         self.children[0].children[1].text = "Back to Map"
@@ -250,8 +256,6 @@ class FightScreen(Screen):
             stage_cleared == 1
         if cleared == 9:
             stage_cleared == 2
-
-        print("cleared=", cleared)
 
     def tie(self):
         self.children[0].children[2].text = "You tied."

@@ -57,8 +57,7 @@ class Magnet(Factory.Widget):
 
 
 class Shop(BoxLayout):
-    cash = NumericProperty(0)
-
+    pass
 
 KV_CODE = '''
 #:import create_spacer kivy_garden.draggable._utils._create_spacer
@@ -94,7 +93,7 @@ Shop:
     orientation:"vertical"
     BoxLayout:
         Label:
-            text: str(root.cash)
+            text: str()
 
     ReorderableGridLayout:
         id:play
@@ -120,8 +119,7 @@ Shop:
 
 class DraggableItem(KXDraggableBehavior, BoxLayout):
     def myfunc(self):
-        app = App.get_running_app()
-        app.root.cash = len(app.root.children[1].children)
+        pass
         
 
 class SampleApp(App):

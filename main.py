@@ -77,7 +77,7 @@ class ShopButton(BoxLayout, Button):
 
 class DraggableItem(KXDraggableBehavior, BoxLayout):
     def on_drag_start(self, touch):
-        if(App.get_running_app().money-self.cost <= 0 and self.drag_cls != "order"):
+        if(App.get_running_app().money-self.cost < 0 and self.drag_cls != "order"):
             self.drag_cancel()
 
     def myfunc(self):
@@ -89,7 +89,10 @@ class DraggableItem(KXDraggableBehavior, BoxLayout):
 class ShopScreen(Screen):
     money = NumericProperty(10)
 
-    def on_load(self):
+    def on_enter(self):
+        self.ids["sh1"].clear_widgets()
+        animal_instances[0] = []
+        animal_instances[1] = []
 
         # print(self.children)
         gl = self.ids["sh1"]
@@ -104,22 +107,25 @@ class ShopScreen(Screen):
                        species+".png")
             im.allow_stretch = 1
             di.add_widget(im)
-            lab = Label(text=f"{species} - {load_animal(species).power}/{load_animal(species).toughness}")
+            lab = Label(
+                text=f"{species} - {load_animal(species).power}/{load_animal(species).toughness}")
             di.species = species
             lab.size_hint_y = .2
             di.add_widget(lab)
             di.cost = 3
             gl.add_widget(di)
 
-    def on_enter(self):
-        animal_instances[0] = []
-        animal_instances[1] = []
-
     def bfunction(self):
         # print(self.children[0].children[1].children)\
         pet_array.clear()
         for i in self.children[0].children[1].children:
             pet_array.append(i.species)
+
+    def sellfirst(self):
+        gl = self.ids["play"]
+        if(len(self.ids["play"].children) > 0):
+            self.ids["play"].remove_widget(self.ids["play"].children[0])
+            App.get_running_app().money += 1
 
 
 class Magnet(Factory.Widget):

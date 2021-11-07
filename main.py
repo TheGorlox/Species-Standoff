@@ -234,6 +234,7 @@ class FightScreen(Screen):
     def run_sim(self):
         sound = SoundLoader.load('sound/sfx/pixely hit.wav')
         if sound:
+            sound.volume = .3
             sound.play()
         animal_instances[0], animal_instances[1] = fight(
             animal_instances[0], animal_instances[1])

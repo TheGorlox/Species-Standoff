@@ -665,7 +665,7 @@ class PolarityBear(Animal):
 
 def fight(friends, foes):
 
-    foes.reverse()
+    # foes.reverse()
     if len(friends) != 0 and len(foes) != 0:
 
         # before attack - takes a list and returns it after all status damage is done (burn, poison etc)

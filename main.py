@@ -55,7 +55,6 @@ class MapScreen(Screen):
             sm.transition = SlideTransition()
 
     def on_enter(self, *args):
-        print("cleared=", cleared)
         if cleared == 1:
             self.children[0].children[1].children[3].disabled = False
         if cleared % 5 == 2:
@@ -193,7 +192,7 @@ class FightScreen(Screen):
             im = Image(source="./images/"+i+".png")
             animal_instances[0].append(load_animal(i))
             animal = animal_instances[0][-1]
-            lab = Label(text=f"{i} - {animal.power}/{animal.toughness}")
+            lab = Label(text=f"{i}\n{animal.power}/{animal.toughness}")
             bl.add_widget(im)
             bl.add_widget(lab)
             im.allow_stretch = 1
@@ -209,7 +208,7 @@ class FightScreen(Screen):
             im = Image(source="./images/"+j+".png")
             animal_instances[1].append(load_animal(j))
             animal = animal_instances[1][-1]
-            lab = Label(text=f"{j} - {animal.power}/{animal.toughness}")
+            lab = Label(text=f"{j}\n{animal.power}/{animal.toughness}")
             bl.add_widget(im)
             bl.add_widget(lab)
             im.allow_stretch = 1
@@ -218,7 +217,6 @@ class FightScreen(Screen):
             self.children[0].children[0].children[0].add_widget(bl)
 
         animal_instances[0].reverse()
-        print("reverse")
         animal_instances[1].reverse()
 
     def run_sim(self):
@@ -236,12 +234,11 @@ class FightScreen(Screen):
     def update(self):
         self.children[0].children[0].children[1].clear_widgets()
         animal_instances[0].reverse()
-        animal_instances[1].reverse()
         for i in animal_instances[0]:
             bl = BoxLayout(orientation="vertical")
             string = i.species.replace(" ", "").replace("'", "")
             im = Image(source="./images/"+string+".png")
-            lab = Label(text=f"{i.species} - {i.power}/{i.toughness}")
+            lab = Label(text=f"{i.species}\n{i.power}/{i.toughness}")
             bl.add_widget(im)
             bl.add_widget(lab)
             im.allow_stretch = 1
@@ -251,11 +248,12 @@ class FightScreen(Screen):
 
 
         self.children[0].children[0].children[0].clear_widgets()
+        animal_instances[1].reverse()
         for j in animal_instances[1]:
             bl = BoxLayout(orientation="vertical")
             string = j.species.replace(" ", "").replace("'", "")
             im = Image(source="./images/"+string+".png")
-            lab = Label(text=f"{j.species} - {j.power}/{j.toughness}")
+            lab = Label(text=f"{j.species}\n{j.power}/{j.toughness}")
             bl.add_widget(im)
             bl.add_widget(lab)
             im.allow_stretch = 1

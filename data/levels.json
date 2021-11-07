@@ -1,10 +1,10 @@
 {
     "stages":[
         ["gnekk", "glipglop"],
-        ["loodle","gnekk", "glipglop"],
-        ["niugnep", "loodle", "sweebull","niugnep","sweebull"],
-        ["niugnep", "sweebull","loodle", "loodle","glipglop", "gnekk"],
-        ["sweebull", "polaritybear","niugnep","loodle","loodle","gnekk"]
+        ["loodle", "gnekk", "glipglop"],
+        ["niugnep", "loodle", "sweebull", "niugnep", "sweebull"],
+        ["niugnep", "sweebull", "loodle", "loodle", "glipglop", "gnekk"],
+        ["sweebull", "polaritybear", "niugnep", "loodle", "loodle", "gnekk"]
     ]
 
 }

@@ -8,6 +8,7 @@ from kivy.uix.button import Button
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.image import Image
+from kivy.uix.label import Label
 from animals.animal import *
 from kivy.clock import Clock
 from kivy.core.audio import SoundLoader
@@ -73,7 +74,9 @@ class ShopScreen(Screen):
             di = DraggableItem()
             di.add_widget(Image(source="./images/" +
                           species+".png"))
-            di.species = species
+            lab = Label(text=species)
+            lab.size_hint_y = .2
+            di.add_widget(lab)
             di.cost = 3
             gl.add_widget(di)
 

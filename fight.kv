@@ -156,7 +156,6 @@
     size_hint_min_y: self.texture_size[1] + dp(10)
 
 <ShopScreen>:
-    doaload: self.on_load()
     Image:
         allow_stretch:1
         keep_ratio:0
@@ -167,10 +166,9 @@
         BoxLayout:
             size_hint_y: .2
             Button:
-                text: "Back"
-                on_press:
-                    root.manager.transition.direction = 'right'
-                    root.manager.current = 'menu'
+                text: "Sell first"
+                on_press: root.sellfirst()
+                            
             ShopButton:
                 orientation:"vertical"
                 

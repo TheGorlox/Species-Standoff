@@ -141,7 +141,10 @@ class FightScreen(Screen):
     def on_enter(self, *args):
         pet_array.reverse()
         for i in pet_array:
-            print(i)
+            print(self.children[0].children[0].children[1].add_widget(
+                Image(source="./images/"+i+".png")))
+            # .children[0]
+            # # print(i)
 
         # from kivy_garden.draggable import KXDraggableBehavior
 animals = []

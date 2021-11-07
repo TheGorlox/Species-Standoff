@@ -183,22 +183,33 @@ class FightScreen(Screen):
         self.children[0].children[0].children[0].clear_widgets()
 
         for i in pet_array:
+            bl = BoxLayout(orientation="vertical")
             im = Image(source="./images/"+i+".png")
+            animal_instances[0].append(load_animal(i))
+            animal = animal_instances[0][-1]
+            lab = Label(text=f"{i} - {animal.power}/{animal.toughness}")
+            bl.add_widget(im)
+            bl.add_widget(lab)
             im.allow_stretch = 1
             im.size_hint_y = .5
             im.pos_hint = {"center_y": .5}
-            self.children[0].children[0].children[1].add_widget(im)
-            animal_instances[0].append(load_animal(i))
+            self.children[0].children[0].children[1].add_widget(bl)
+            
 
         i = stages["stages"][App.get_running_app().current_stage]
 
         for j in i:
-            animal_instances[1].append(load_animal(j))
+            bl = BoxLayout(orientation="vertical")
             im = Image(source="./images/"+j+".png")
+            animal_instances[1].append(load_animal(j))
+            animal = animal_instances[1][-1]
+            lab = Label(text=f"{j} - {animal.power}/{animal.toughness}")
+            bl.add_widget(im)
+            bl.add_widget(lab)
             im.allow_stretch = 1
             im.size_hint_y = .5
             im.pos_hint = {"center_y": .5}
-            self.children[0].children[0].children[0].add_widget(im)
+            self.children[0].children[0].children[0].add_widget(bl)
 
         animal_instances[0].reverse()
         print("reverse")
@@ -221,21 +232,30 @@ class FightScreen(Screen):
         animal_instances[0].reverse()
         animal_instances[1].reverse()
         for i in animal_instances[0]:
+            bl = BoxLayout(orientation="vertical")
             string = i.species.replace(" ", "").replace("'", "")
             im = Image(source="./images/"+string+".png")
+            lab = Label(text=f"{i.species} - {i.power}/{i.toughness}")
+            bl.add_widget(im)
+            bl.add_widget(lab)
             im.allow_stretch = 1
             im.size_hint_y = .5
             im.pos_hint = {"center_y": .5}
-            self.children[0].children[0].children[1].add_widget(im)
+            self.children[0].children[0].children[1].add_widget(bl)
+
 
         self.children[0].children[0].children[0].clear_widgets()
         for j in animal_instances[1]:
+            bl = BoxLayout(orientation="vertical")
             string = j.species.replace(" ", "").replace("'", "")
             im = Image(source="./images/"+string+".png")
+            lab = Label(text=f"{j.species} - {j.power}/{j.toughness}")
+            bl.add_widget(im)
+            bl.add_widget(lab)
             im.allow_stretch = 1
             im.size_hint_y = .5
             im.pos_hint = {"center_y": .5}
-            self.children[0].children[0].children[0].add_widget(im)
+            self.children[0].children[0].children[0].add_widget(bl)
 
         animal_instances[0].reverse()
         animal_instances[1].reverse()

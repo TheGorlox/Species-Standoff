@@ -165,6 +165,7 @@
             Button:
                 text: "Continue"
                 on_press:
+                    doathing:root.bfunction()
                     root.manager.transition.direction = 'left'
                     root.manager.current = 'fight'
         Label:
@@ -193,4 +194,4 @@
     Image:
         allow_stretch:1
         keep_ratio:0
-        source:"./images/spaceshop.png" 
+        source:"./images/spaceshop.png"

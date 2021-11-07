@@ -20,7 +20,7 @@ from kivy.properties import (
 import asynckivy as ak
 from kivy_garden.draggable import KXDraggableBehavior
 
-
+pet_array = []
 Builder.load_file("fight.kv")
 # Declare both screens
 
@@ -59,8 +59,6 @@ class DraggableItem(KXDraggableBehavior, BoxLayout):
             App.get_running_app().money -= self.cost
             self.drag_cls = 'order'
 
-        print(self.species)
-
 
 class ShopScreen(Screen):
     money = NumericProperty(10)
@@ -81,10 +79,16 @@ class ShopScreen(Screen):
             im.allow_stretch = 1
             di.add_widget(im)
             lab = Label(text=species)
+            di.species = species
             lab.size_hint_y = .2
             di.add_widget(lab)
             di.cost = 3
             gl.add_widget(di)
+
+    def bfunction(self):
+        # print(self.children[0].children[1].children)
+        for i in self.children[0].children[1].children:
+            pet_array.append(i.species)
 
 
 class Magnet(Factory.Widget):
@@ -132,11 +136,14 @@ class Magnet(Factory.Widget):
 class Shop(BoxLayout):
     pass
 
+
 class FightScreen(Screen):
-    pass
+    def on_enter(self, *args):
+        pet_array.reverse()
+        for i in pet_array:
+            print(i)
 
-
-# from kivy_garden.draggable import KXDraggableBehavior
+        # from kivy_garden.draggable import KXDraggableBehavior
 animals = []
 # for i in range(5):
 animals.append(Cow())
@@ -157,11 +164,12 @@ class BoxLayoutExample(BoxLayout):
     pass
 
 
-sound = SoundLoader.load('./sound/speciesstandoff3.wav')
+# sound = SoundLoader.load('./sound/speciesstandoff3.wav')
+sound = SoundLoader.load('./sound/spu1.wav')
 if sound:
     sound.loop = True
     sound.play()
-# sound = SoundLoader.load('./sound/speciesstandoff 3.wav')
+# sound = SoundLoader.load('./sound/spu1.wav')
 
 
 class FightApp(App):

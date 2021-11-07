@@ -140,11 +140,16 @@ class Shop(BoxLayout):
 class FightScreen(Screen):
     def on_enter(self, *args):
         pet_array.reverse()
+        animal_instances = []
         for i in pet_array:
-            print(self.children[0].children[0].children[1].add_widget(
-                Image(source="./images/"+i+".png")))
-            # .children[0]
-            # # print(i)
+            im = Image(source="./images/"+i+".png")
+            im.allow_stretch = 1
+            im.size_hint_y = .5
+            im.pos_hint = {"center_y":.5}
+            self.children[0].children[0].children[1].add_widget(im)
+            animal_instances.append(load_animal(i))
+        
+            
 
         # from kivy_garden.draggable import KXDraggableBehavior
 animals = []

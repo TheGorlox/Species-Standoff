@@ -11,6 +11,7 @@ class Animal:
     
         self.dodge_chance = 0
         self.crit_chance = 0
+        self.crit_multiplier = 1.5
 
         self.neg_effects = { "burned":0,
                         "poisoned":0,
@@ -41,6 +42,7 @@ class Cow(Animal):
         #special attributes
         self.dodge_chance = 0
         self.crit_chance = 0
+        self.crit_multiplier = 1.5
 
         self.neg_effects = { "burned":0,
                         "poisoned":0,
@@ -75,6 +77,7 @@ class Chicken(Animal):
         #special attributes
         self.dodge_chance = 0
         self.crit_chance = 0
+        self.crit_multiplier = 1.5
 
         self.neg_effects = { "burned":0,
                             "poisoned":0,
@@ -111,6 +114,7 @@ class Snake(Animal):
         #special attributes
         self.dodge_chance = 0
         self.crit_chance = 0
+        self.crit_multiplier = 1.5
 
         self.neg_effects = { "burned":0,
                             "poisoned":0,
@@ -146,6 +150,7 @@ class Fish(Animal):
         #special attributes
         self.dodge_chance = 0
         self.crit_chance = .25
+        self.crit_multiplier = 4
 
         self.neg_effects = { "burned":0,
                             "poisoned":0,
@@ -181,6 +186,7 @@ class Eel(Animal):
         #special attributes
         self.dodge_chance = 0
         self.crit_chance = 0
+        self.crit_multiplier = 1.5
 
         self.neg_effects = { "burned":0,
                             "poisoned":0,
@@ -216,6 +222,7 @@ class Dog(Animal):
         #special attributes
         self.dodge_chance = 0
         self.crit_chance = 0
+        self.crit_multiplier = 1.5
 
         self.neg_effects = { "burned":0,
                             "poisoned":0,
@@ -251,6 +258,7 @@ class Cat(Animal):
         #special attributes
         self.dodge_chance = 0
         self.crit_chance = 0
+        self.crit_multiplier = 1.5
 
         self.neg_effects = { "burned":0,
                             "poisoned":0,
@@ -285,6 +293,7 @@ class Crow(Animal):
         #special attributes
         self.dodge_chance = .25
         self.crit_chance = 0
+        self.crit_multiplier = 1.5
 
         self.neg_effects = { "burned":0,
                             "poisoned":0,
@@ -319,6 +328,7 @@ class Penguin(Animal):
         #special attributes
         self.dodge_chance = 0
         self.crit_chance = 0
+        self.crit_multiplier = 1.5
 
         self.neg_effects = { "burned":0,
                             "poisoned":0,
@@ -354,6 +364,7 @@ class PolarBear(Animal):
         #special attributes
         self.dodge_chance = 0
         self.crit_chance = 0
+        self.crit_multiplier = 1.5
 
         self.neg_effects = { "burned":0,
                             "poisoned":0,
@@ -389,6 +400,7 @@ class Panda(Animal):
         #special attributes
         self.dodge_chance = 0
         self.crit_chance = 0
+        self.crit_multiplier = 1.5
 
         self.neg_effects = { "burned":0,
                             "poisoned":0,
@@ -424,6 +436,7 @@ class Glipglop(Animal):
         #special attributes
         self.dodge_chance = 0
         self.crit_chance = .5
+        self.crit_multiplier = 1.5
 
         self.neg_effects = { "burned":0,
                             "poisoned":0,
@@ -459,6 +472,7 @@ class Sweebull(Animal):
         #special attributes
         self.dodge_chance = 0
         self.crit_chance = 0
+        self.crit_multiplier = 1.5
 
         self.neg_effects = { "burned":0,
                             "poisoned":0,
@@ -494,6 +508,7 @@ class Gnekk(Animal):
         #special attributes
         self.dodge_chance = 0
         self.crit_chance = .33
+        self.crit_multiplier = 1.5
 
         self.neg_effects = { "burned":0,
                             "poisoned":0,
@@ -529,6 +544,7 @@ class Loodle(Animal):
         #special attributes
         self.dodge_chance = .25
         self.crit_chance = 0
+        self.crit_multiplier = 1.5
 
         self.neg_effects = { "burned":0,
                             "poisoned":0,
@@ -564,6 +580,7 @@ class Niugnep(Animal):
         #special attributes
         self.dodge_chance = 0
         self.crit_chance = 0
+        self.crit_multiplier = 1.5
 
         self.neg_effects = { "burned":0,
                             "poisoned":0,
@@ -664,7 +681,7 @@ def combat(team, enemy, teammates):
         if random.random() <= enemy.crit_chance:
             # if enemy crits
             print(enemy.species, " crit!")
-            team.toughness = team.toughness - math.ceil(enemy.power * 1.5)
+            team.toughness = team.toughness - math.ceil(enemy.power * enemy.crit_multiplier)
 
         # else normal combat
         else: team.toughness = team.toughness - enemy.power
@@ -677,6 +694,16 @@ def combat(team, enemy, teammates):
 
     if teammates.index(team) != len(teammates)-1:
         teammates[teammates.index(team)+1].toughness - enemy.mutator["shock"]
+
+def load_animal(animal:str):
+    animal_dict = {
+        "cow":Cow(), "chicken":Chicken(), "snake":Snake(), "fish":Fish(),
+        "eel":Eel(), "dog":Dog(), "cat":Cat(), "crow":Crow(), "penguin":Penguin(),
+        "polarbear":Penguin(), "panda":Panda(), "glipglop":Glipglop(),
+        "sweebull":Sweebull(), "gnekk":Gnekk(),"loodle":Loodle(), "niugnep":Niugnep()
+                    }
+
+    return animal_dict[animal]
 
 ### TESTING TESTING ONE TWO THREE TESTING TESTING ###
 friends = [Eel(),Eel(),Eel(),Eel(),Eel(),Eel(),Eel()]

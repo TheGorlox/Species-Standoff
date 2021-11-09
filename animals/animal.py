@@ -4,6 +4,31 @@ import math
 # initialize "Animal"() to init default values.
 # initialize "Animal"(power, toughness) to init certain power/toughness
 
+#### IDEAS ####
+"""
+pets:
+- alien bomb egg: a 0/1 or 0/0 with fire 3 and egg 2
+- sickly goose: a 10/1 with "poisoned" neg effect so it can only last one turn (might be op)
+    -maybe when it dies it has a milk effect of -1 or -2 so it poisons the next guy
+- 
+
+stats/abilities:
+- multi-egg ability
+- armor ability that is weak to shock (shock does 1.5-2x damage) but negates x incoming damage
+- similar thing for poison that makes it weak to fire
+- teleport ability? like dodge except it moves it to a random different spot in the
+  list and the animal behind it takes all the damage (dick move)
+- 
+
+modifiers/powerups in the shop:
+- +x/+x permanent and just-for-this-round boosts to specific species
+- 
+
+bosses:
+- boss with fire/poison spray that affects multiple targets in the front
+- boss with fire/poison/shock immunity
+
+"""
 
 class Animal:
     def __init__(self):
@@ -43,10 +68,12 @@ class Cow(Animal):
         # special attributes
         self.on_death["milk"] = 2
 
-    def die(self, friends, foes, index):
-        if index == -1:
-            return
+    def die(self, friends, foes):
+        index = friends.index(self)
+        friends.remove(self)
+        if len(friends) == 0: return friends
         friends[index].toughness += self.on_death["milk"]
+        return friends
 
 
 
@@ -62,12 +89,14 @@ class Chicken(Animal):
         # special attributes
         self.on_death["egg"] = 1
 
-    def die(self, friends, foes, index):
-        if index == -1:
-            return
+    def die(self, friends, foes):
+        friends.remove(self)
+        if len(foes) == 0: return friends
         (random.choice(foes)).toughness -= self.on_death["egg"]
         if(self.on_death["egg"]) > 0:
             print("egg thrown")
+        return friends
+
 
 
 class Snake(Animal):
@@ -82,8 +111,9 @@ class Snake(Animal):
         # special attributes
         self.mutator["poison"] = 1
 
-    def die(self, friends, foes, index):
-        pass
+    def die(self, friends, foes):
+        friends.remove(self)
+        return friends
 
 
 class Fish(Animal):
@@ -99,8 +129,11 @@ class Fish(Animal):
         self.crit_chance = .25
         self.crit_multiplier = 4
 
-    def die(self, friends, foes, index):
-        pass
+    def die(self, friends, foes):
+        friends.remove(self)
+        return friends
+
+
 
 class Eel(Animal):
     def __init__(self):
@@ -114,8 +147,11 @@ class Eel(Animal):
         # special attributes
         self.mutator["shock"] = 1
 
-    def die(self, friends, foes, index):
-        pass
+    def die(self, friends, foes):
+        friends.remove(self)
+        return friends
+
+
 
 class Dog(Animal):
     def __init__(self):
@@ -131,8 +167,11 @@ class Dog(Animal):
         self.crit_chance = .2
         self.crit_multiplier = 2
 
-    def die(self, friends, foes, index):
-        pass
+    def die(self, friends, foes):
+        friends.remove(self)
+        return friends
+
+
 
 class Cat(Animal):
     def __init__(self):
@@ -148,10 +187,13 @@ class Cat(Animal):
 
         self.on_death["milk"] = 1
 
-    def die(self, friends, foes, index):
-        if index == -1:
-            return
+    def die(self, friends, foes):
+        index = friends.index(self)
+        friends.remove(self)
+        if len(friends) == 0: return friends
         friends[index].toughness += self.on_death["milk"]
+        return friends
+
 
 
 class Crow(Animal):
@@ -168,10 +210,13 @@ class Crow(Animal):
 
         self.on_death["egg"] = random.randint(0,1)
 
-    def die(self, friends, foes, index):
+    def die(self, friends, foes):
+        friends.remove(self)
         if len(foes) == 0:
-            return
+            return friends
         (random.choice(foes)).toughness -= self.on_death["egg"]
+        return friends
+
 
 
 class Penguin(Animal):
@@ -187,10 +232,13 @@ class Penguin(Animal):
 
         self.on_death["egg"] = random.randint(0,1)
 
-    def die(self, friends, foes, index):
+    def die(self, friends, foes):
+        friends.remove(self)
         if len(foes) == 0:
-            return
+            return friends
         (random.choice(foes)).toughness -= self.on_death["egg"]
+        return friends
+
 
 
 class PolarBear(Animal):
@@ -204,8 +252,11 @@ class PolarBear(Animal):
 
         # special attributes
 
-    def die(self, friends, foes, index):
-        pass
+    def die(self, friends, foes):
+        friends.remove(self)
+        return friends
+
+
 
 class Panda(Animal):
     def __init__(self):
@@ -218,8 +269,11 @@ class Panda(Animal):
 
         # special attributes
 
-    def die(self, friends, foes, index):
-        pass
+    def die(self, friends, foes):
+        friends.remove(self)
+        return friends
+
+
 
 # TIER2
 class Glipglop(Animal):
@@ -237,8 +291,11 @@ class Glipglop(Animal):
 
         self.mutator["poison"] = 1
 
-    def die(self, friends, foes, index):
-        pass
+    def die(self, friends, foes):
+        friends.remove(self)
+        return friends
+
+
 
 class Sweebull(Animal):
     def __init__(self):
@@ -250,15 +307,17 @@ class Sweebull(Animal):
         self.image = "./images/sweebull.png"
 
         # special attributes
-
         self.mutator["poison"] = 1
 
         self.on_death["milk"] = 1
 
-    def die(self, friends, foes, index):
-        if index == -1:
-            return
+    def die(self, friends, foes):
+        index = friends.index(self)
+        friends.remove(self)
+        if len(friends) == 0: return friends
         friends[index].toughness += self.on_death["milk"]
+        return friends
+
 
 
 class Gnekk(Animal):
@@ -277,10 +336,13 @@ class Gnekk(Animal):
 
         self.on_death["egg"] = 1
 
-    def die(self, friends, foes, index):
+    def die(self, friends, foes):
+        friends.remove(self)
         if len(foes) == 0:
-            return
+            return friends
         (random.choice(foes)).toughness -= self.on_death["egg"]
+        return friends
+
 
 
 class Loodle(Animal):
@@ -297,8 +359,11 @@ class Loodle(Animal):
 
         self.mutator["fire"] = 2
 
-    def die(self, friends, foes, index):
-        pass
+    def die(self, friends, foes):
+        friends.remove(self)
+        return friends
+
+
 
 class Niugnep(Animal):
     def __init__(self):
@@ -315,10 +380,13 @@ class Niugnep(Animal):
         self.on_death["egg"] = random.randint(0,1)
 
 
-    def die(self, friends, foes, index):
+    def die(self, friends, foes):
+        friends.remove(self)
         if len(foes) == 0:
-            return
+            return friends
         (random.choice(foes)).toughness -= self.on_death["egg"]
+        return friends
+
 
 
 class PolarityBear(Animal):
@@ -335,15 +403,17 @@ class PolarityBear(Animal):
 
         self.mutator["shock"] = 3
 
-    def die(self, friends, foes, index):
-        pass
+    def die(self, friends, foes):
+        friends.remove(self)
+        return friends
+
 
 
 def fight(friends, foes):
 
     foes.reverse()
-    while len(friends) != 0 and len(foes) != 0:     #<-- for testing
-    #if len(friends) != 0 and len(foes) != 0:       #<-- for running
+    #while len(friends) != 0 and len(foes) != 0:     #<-- for testing
+    if len(friends) != 0 and len(foes) != 0:       #<-- for running
 
 
         # before attack - takes a list and returns it after all status damage is done (burn, poison etc)
@@ -372,11 +442,7 @@ def pre_attack_damage(team, enemy):
         animal.toughness -= animal.neg_effects["poisoned"]
 
         if animal.toughness <= 0:
-            index = team.index(animal)
-            if index == len(team)-1:
-                index -= 1
-            team.remove(animal)
-            animal.die(team, enemy, index)
+            team = animal.die(team, enemy)
 
     return team
 
@@ -401,19 +467,10 @@ def attack(friends, foes):
 
     # on die
     if friend.toughness <= 0:
-        index = friends.index(friend)
-        if index == len(friends)-1:
-            index -= 1
-        friends.remove(friend)
-        friend.die(friends, foes, index)
+        friends = friend.die(friends, foes)
 
     if foe.toughness <= 0:
-        index = foes.index(foe)
-        # if dead animal is last in the list
-        if index == len(foes)-1:
-            index -= 1
-        foes.remove(foe)
-        foe.die(foes, friends, index)
+        foes = foe.die(foes, friends)
 
     return friends, foes
 
@@ -455,7 +512,7 @@ def load_animal(animal: str):
 
 ### TESTING TESTING ONE TWO THREE TESTING TESTING ###
 friends = [Cow(), Chicken(), Eel(), Cat(), Fish(), PolarBear(), Panda(), Dog(), Penguin(), Snake(), Crow()]
-foes = [Glipglop(), Gnekk(), Loodle(), Loodle(), Niugnep(), PolarityBear()]
+foes = [Glipglop(), Sweebull(), Gnekk(), Loodle(), Niugnep(), PolarityBear()]
 
 res1, res2 = fight(friends, foes)
 
